@@ -1,5 +1,5 @@
 /**
- * $Id: mxMockupNavigation.js,v 1.1 2013-01-16 16:06:57 gaudenz Exp $
+ * $Id: mxMockupNavigation.js,v 1.2 2013-02-12 16:51:32 mate Exp $
  * Copyright (c) 2006-2010, JGraph Ltd
  */
 
@@ -23,6 +23,14 @@ function mxShapeMockupBreadcrumb(bounds, fill, stroke, strokewidth)
  */
 mxUtils.extend(mxShapeMockupBreadcrumb, mxShape);
 
+mxShapeMockupBreadcrumb.prototype.cst = {
+		SHAPE_BREADCRUMB : 'mxgraph.mockup.navigation.breadcrumb',
+		MAIN_TEXT : 'mainText',
+		TEXT_SIZE : 'textSize',
+		TEXT_COLOR : 'textColor',
+		TEXT_COLOR2 : 'textColor2'
+};
+
 /**
  * Function: paintVertexShape
  * 
@@ -30,10 +38,10 @@ mxUtils.extend(mxShapeMockupBreadcrumb, mxShape);
  */
 mxShapeMockupBreadcrumb.prototype.paintVertexShape = function(c, x, y, w, h)
 {
-	var textStrings = mxUtils.getValue(this.style, mxMockupC.BUTTON_TEXT, 'Layer 1, Layer 2, Layer 3').toString().split(',');
-	var fontColor = mxUtils.getValue(this.style, mxMockupC.STYLE_TEXTCOLOR, '#666666');
-	var selectedFontColor = mxUtils.getValue(this.style, mxMockupC.STYLE_TEXTCOLOR2, '#008cff');
-	var fontSize = mxUtils.getValue(this.style, mxConstants.STYLE_FONTSIZE, '17').toString();
+	var textStrings = mxUtils.getValue(this.style, mxShapeMockupBreadcrumb.prototype.cst.MAIN_TEXT, 'Layer 1, Layer 2, Layer 3').toString().split(',');
+	var fontColor = mxUtils.getValue(this.style, mxShapeMockupBreadcrumb.prototype.cst.TEXT_COLOR, '#666666');
+	var selectedFontColor = mxUtils.getValue(this.style, mxShapeMockupBreadcrumb.prototype.cst.TEXT_COLOR2, '#008cff');
+	var fontSize = mxUtils.getValue(this.style, mxShapeMockupBreadcrumb.prototype.cst.TEXT_SIZE, '17').toString();
 	var separatorColor = mxUtils.getValue(this.style, mxConstants.STYLE_STROKECOLOR, '#c4c4c4');
 	var buttonNum = textStrings.length;
 	var buttonWidths = new Array(buttonNum);
@@ -104,7 +112,7 @@ mxShapeMockupBreadcrumb.prototype.buttonText = function(c, w, h, textString, but
 	c.text((w + buttonWidth * 0.5) * trueW / minW, h * 0.5, 0, 0, textString, mxConstants.ALIGN_CENTER, mxConstants.ALIGN_MIDDLE, 0, null, 0, 0, 0);
 };
 
-mxCellRenderer.prototype.defaultShapes[mxMockupC.SHAPE_BREADCRUMB] = mxShapeMockupBreadcrumb;
+mxCellRenderer.prototype.defaultShapes[mxShapeMockupBreadcrumb.prototype.cst.SHAPE_BREADCRUMB] = mxShapeMockupBreadcrumb;
 
 //**********************************************************************************************************************************************************
 //Step Bar
@@ -126,6 +134,15 @@ function mxShapeMockupStepBar(bounds, fill, stroke, strokewidth)
  */
 mxUtils.extend(mxShapeMockupStepBar, mxShape);
 
+mxShapeMockupStepBar.prototype.cst = {
+		SHAPE_STEP_BAR : 'mxgraph.mockup.navigation.stepBar',
+		SELECTED : '+',			//must be 1 char
+		MAIN_TEXT : 'mainText',
+		TEXT_SIZE : 'textSize',
+		TEXT_COLOR : 'textColor',
+		TEXT_COLOR2 : 'textColor2'
+};
+
 /**
  * Function: paintVertexShape
  * 
@@ -133,10 +150,10 @@ mxUtils.extend(mxShapeMockupStepBar, mxShape);
  */
 mxShapeMockupStepBar.prototype.paintVertexShape = function(c, x, y, w, h)
 {
-	var textStrings = mxUtils.getValue(this.style, mxMockupC.BUTTON_TEXT, 'Step 1, Step 2, Step 3').toString().split(',');
-	var fontColor = mxUtils.getValue(this.style, mxMockupC.STYLE_TEXTCOLOR, '#666666');
-	var currColor = mxUtils.getValue(this.style, mxMockupC.STYLE_TEXTCOLOR2, '#008cff');
-	var fontSize = mxUtils.getValue(this.style, mxConstants.STYLE_FONTSIZE, '17').toString();
+	var textStrings = mxUtils.getValue(this.style, mxShapeMockupStepBar.prototype.cst.MAIN_TEXT, 'Step 1, Step 2, Step 3').toString().split(',');
+	var fontColor = mxUtils.getValue(this.style, mxShapeMockupStepBar.prototype.cst.TEXT_COLOR, '#666666');
+	var currColor = mxUtils.getValue(this.style, mxShapeMockupStepBar.prototype.cst.TEXT_COLOR2, '#008cff');
+	var fontSize = mxUtils.getValue(this.style, mxShapeMockupStepBar.prototype.cst.TEXT_SIZE, '17').toString();
 	var bgColor = mxUtils.getValue(this.style, mxConstants.STYLE_STROKECOLOR, '#c4c4c4');
 	var doneColor = mxUtils.getValue(this.style, mxConstants.STYLE_FILLCOLOR, '#666666');
 	var buttonNum = textStrings.length;
@@ -149,7 +166,7 @@ mxShapeMockupStepBar.prototype.paintVertexShape = function(c, x, y, w, h)
 	{
 		var buttonText = textStrings[i];
 
-		if(buttonText.charAt(0) === mxMockupC.SELECTED)
+		if(buttonText.charAt(0) === mxShapeMockupStepBar.prototype.cst.SELECTED)
 		{
 			buttonText = textStrings[i].substring(1);
 			selectedButton = i;
@@ -329,18 +346,11 @@ mxShapeMockupStepBar.prototype.stepLineFg = function(c, w, h, buttonNum, buttonW
 			c.fillAndStroke();
 		}
 	}
-
-//	c.moveTo(currWidth - size * 0.5, midY - size);
-//	c.lineTo(currWidth + size * 0.5, midY);
-//	c.lineTo(currWidth - size * 0.5, midY + size);
-//	c.begin();
-//	c.rect(startX, midY - size * 0.2, endX - startX, size * 0.4);
-//	c.fillAndStroke();
 };
 
 mxShapeMockupStepBar.prototype.buttonText = function(c, w, h, textString, buttonWidth, fontSize, minW, trueW)
 {
-	if(textString.charAt(0) === mxMockupC.SELECTED)
+	if(textString.charAt(0) === mxShapeMockupStepBar.prototype.cst.SELECTED)
 	{
 		textString = textString.substring(1);
 	}
@@ -350,4 +360,4 @@ mxShapeMockupStepBar.prototype.buttonText = function(c, w, h, textString, button
 	c.text((w + buttonWidth * 0.5) * trueW / minW, fontSize * 0.5, 0, 0, textString, mxConstants.ALIGN_CENTER, mxConstants.ALIGN_MIDDLE, 0, null, 0, 0, 0);
 };
 
-mxCellRenderer.prototype.defaultShapes[mxMockupC.SHAPE_STEP_BAR] = mxShapeMockupStepBar;
+mxCellRenderer.prototype.defaultShapes[mxShapeMockupStepBar.prototype.cst.SHAPE_STEP_BAR] = mxShapeMockupStepBar;

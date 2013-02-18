@@ -100,6 +100,7 @@
 
 		// Paths and files
 		var STENCIL_PATH = 'stencils';
+		var SHAPES_PATH = 'shapes';
 		var IMAGE_PATH = 'images';
 		// Path for images inside the diagram
 		var GRAPH_IMAGE_PATH = 'img';
@@ -346,7 +347,6 @@
 
 			gapi.auth.init(function()
 			{
-				// TODO: Check if client successfully loaded in IE9
 				mxIntegration.startIntegration();
 			});
 		});

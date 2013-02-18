@@ -27,6 +27,7 @@
 		var mockups = this.sidebar.mockups;
 		var ee = this.sidebar.ee;
 		var pids = this.sidebar.pids;
+		var cisco = this.sidebar.cisco;
 
 		// Adds style input in test mode
 		if (urlParams['test'] == '1')
@@ -98,13 +99,13 @@
 		// Default libraries for domains
 		if (stc == null)
 		{
-			stc = 'general;images;uml;bpmn;flowchart;basic;arrows;clipart';
+			stc = 'general;images;uml;ios;er;bpmn;flowchart;basic;arrows;clipart';
 		}
 
 		var tmp = stc.split(';');
 
 		// Individual libs
-		var all = [ 'general', 'images', 'uml', 'bpmn', 'flowchart', 'basic', 'arrows', 'leanMapping' ]
+		var all = [ 'general', 'images', 'uml', 'er', 'ios', 'flowchart', 'basic', 'arrows', 'leanMapping' ]
 
 		for ( var i = 0; i < all.length; i++)
 		{
@@ -150,6 +151,10 @@
 			this.sidebar.togglePalettes('pid', pids);
 		}
 
+		if (mxUtils.indexOf(tmp, 'cisco') < 0)
+		{
+			this.sidebar.togglePalettes('cisco', cisco);
+		}
 		// TODO: Expand the first entry
 
 		// Adds zoom via shift-wheel

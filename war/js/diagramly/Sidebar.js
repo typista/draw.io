@@ -8,7 +8,9 @@
 	/**
 	 * Specifies special libraries that are loaded via dynamic JS.
 	 */
-	mxStencilRegistry.libraries['bpmn'] = ['shapes/bpmn/mxBpmnShape2.js', STENCIL_PATH + '/bpmn.xml'];
+	mxStencilRegistry.libraries['bpmn'] = [SHAPES_PATH + '/bpmn/mxBpmnShape2.js', STENCIL_PATH + '/bpmn.xml'];
+	mxStencilRegistry.libraries['er'] = [SHAPES_PATH + '/er/mxER.js'];
+	mxStencilRegistry.libraries['ios'] = [SHAPES_PATH + '/mockup/mxMockupiOS.js'];
 
 	/**
 	 * Toggle palette.
@@ -48,11 +50,13 @@
 		var mockups = this.mockups;
 		var ee = this.ee;
 		var pids = this.pids;
+		var cisco = this.cisco;
 
 		this.addGeneralPalette(true);
 		this.addIconfinder();
 		this.addUmlPalette(false);
-
+		this.addErPalette();
+		this.addIosPalette();
 		this.addBpmnPalette(dir, false);
 		this.addStencilPalette('flowchart', 'Flowchart', dir + '/flowchart.xml',
 			';fillColor=#ffffff;strokeColor=#000000;strokeWidth=2');
@@ -105,7 +109,15 @@
 				'Firewall-page1', 'Ip_Camera', 'Modem',
 				'power_distribution_unit', 'Print_Server',
 				'Print_Server_Wireless', 'Repeater', 'Router', 'Router_Icon',
-				'Switch', 'UPS', 'Wireless_Router', 'Wireless_Router_N' ]);
+				'Switch', 'UPS', 'Wireless_Router', 'Wireless_Router_N' ],
+				[ 'Bridge', 'Certificate', 'Certificate Off', 'Cloud', 'Cloud Computer',
+				'Cloud Computer Private', 'Cloud Rack', 'Cloud Rack Private',
+				'Cloud Server', 'Cloud Server Private', 'Cloud Storage',
+				'Concentrator', 'Email', 'Firewall 1', 'Firewall 2',
+				'Firewall', 'Camera', 'Modem',
+				'Power Distribution Unit', 'Print Server',
+				'Print Server Wireless', 'Repeater', 'Router', 'Router Icon',
+				'Switch', 'UPS', 'Wireless Router', 'Wireless Router N' ]);
 		this.addImagePalette('people', 'Clipart / People', imgDir
 				+ '/lib/clip_art/people/', '_128x128.png', [ 'Suit_Man',
 				'Suit_Man_Black', 'Suit_Man_Blue', 'Suit_Man_Green',
@@ -179,6 +191,14 @@
 		
 		this.addStencilPalette('leanMapping', 'Lean Mapping', dir + '/lean_mapping.xml',
 			';fillColor=#ffffff;strokeColor=#000000;strokeWidth=2');
+			
+		for (var i = 0; i < cisco.length; i++)
+		{
+			this.addStencilPalette('cisco' + cisco[i], 'Cisco / ' + cisco[i],
+				dir + '/cisco/' + cisco[i].toLowerCase().replace(/ /g, '_') + '.xml',
+				';fillColor=#036897;strokeColor=#ffffff;strokeWidth=2', null, null, 1.6);
+		}
+
 		this.addMoreShapes();
 	};
 	
@@ -667,6 +687,172 @@
 			content.appendChild(this.createVertexTemplate(s + 'outline=boundNonint;symbol=parallelMultiple;', w, h, '', 'Parallel Multiple Boundary Non-Interrupting', false));
 
 			content.appendChild(this.createVertexTemplate(s + 'outline=end;symbol=terminate;', w, h, '', 'Terminate', false));
+		}));
+	};
+	
+	// Adds ER shapes
+	Sidebar.prototype.addErPalette = function()
+	{
+		var w = 100;
+		var h = 100;
+
+		this.addPalette('er', mxResources.get('entityRelation'), false, mxUtils.bind(this, function(content)
+		{
+			var s = mxConstants.STYLE_VERTICAL_LABEL_POSITION + '=bottom;' + mxConstants.STYLE_VERTICAL_ALIGN + '=top;' + mxConstants.STYLE_STROKEWIDTH + '=2;';
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.er.attribute;buttonText=Attribute;textColor=#000000;fontSize=17;buttonStyle=dblFrame;' + mxConstants.STYLE_FILLCOLOR + '=#ffffff;', w, h, '', 'Attribute', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.er.bachmans;textColor=#000000;' + mxConstants.STYLE_FONTSIZE + '=17;', w * 3, h * 2, '', 'ERD Bachman\'s Notation', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.er.chens;textColor=#000000;' + mxConstants.STYLE_FONTSIZE + '=17;', w * 3, h, '', 'ERD Chen\'s Notation', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.er.cloud;buttonText=Cloud;textColor=#000000;' + mxConstants.STYLE_FONTSIZE + '=17;', w, h, '', 'Cloud', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.er.entity;buttonStyle=round;' + mxConstants.STYLE_FILLCOLOR + '=#ffffff;buttonText=Entity1;', w, h, '', 'Entity', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.er.entity;buttonStyle=rect;' + mxConstants.STYLE_FILLCOLOR + '=#ffffff;buttonText=Entity1;', w, h, '', 'Entity', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.er.entity;buttonStyle=dblFrame;' + mxConstants.STYLE_FILLCOLOR + '=#ffffff;buttonText=Entity1;', w, h, '', 'Entity', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.er.entityExt;buttonText=Entity;' + mxConstants.STYLE_FILLCOLOR + '=#008cff;fillColor2=#ffffff;' + mxConstants.STYLE_FONTSIZE + '=17;subText=+ attribute 1,+ attribute 2,+ attribute 3;', w, h, '', 'Entity Extended', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.er.ie;textColor=#000000;' + mxConstants.STYLE_FONTSIZE + '=17;', w * 3.5, h * 1.2, '', 'ERD Information Engineering Notation', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.er.has;buttonText=Has;textColor=#000000;' + mxConstants.STYLE_FONTSIZE + '=17;buttonStyle=rhombus;', w, h, '', 'Has', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.er.hierarchy;buttonText=main;subText=sub;textColor=#000000;' + mxConstants.STYLE_FONTSIZE + '=17;buttonStyle=round;', w, h, '', 'Hierarchy', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.er.note;buttonText=Note;textColor=#000000;' + mxConstants.STYLE_FONTSIZE + '=17;fillColor2=#ffffff;', w, h, '', 'Note', false));
+
+			content.appendChild(this.createEdgeTemplate('edgeStyle=none;' + mxConstants.STYLE_ENDARROW + '=ERzeroToMany;endFill=1;', w, h, '', '0 to many optional', false));
+			content.appendChild(this.createEdgeTemplate('edgeStyle=none;' + mxConstants.STYLE_ENDARROW + '=ERoneToMany;', w, h, '', '1 to many', false));
+			content.appendChild(this.createEdgeTemplate('edgeStyle=none;' + mxConstants.STYLE_ENDARROW + '=ERmandOne;', w, h, '', '1 mandatory', false));
+			content.appendChild(this.createEdgeTemplate('edgeStyle=none;' + mxConstants.STYLE_STARTARROW + '=ERmandOne;' + mxConstants.STYLE_ENDARROW + '=ERmandOne;', w, h, '', '1 to 1', false));
+			content.appendChild(this.createEdgeTemplate('edgeStyle=none;' + mxConstants.STYLE_ENDARROW + '=ERone;endFill=1;', w, h, '', '1', false));
+			content.appendChild(this.createEdgeTemplate('edgeStyle=none;' + mxConstants.STYLE_ENDARROW + '=ERzeroToOne;endFill=1;', w, h, '', '0 to 1', false));
+			content.appendChild(this.createEdgeTemplate('edgeStyle=none;' + mxConstants.STYLE_ENDARROW + '=ERmany;endFill=1;', w, h, '', 'Many', false));
+			content.appendChild(this.createEdgeTemplate('edgeStyle=none;' + mxConstants.STYLE_STARTARROW + '=ERmany;' + mxConstants.STYLE_ENDARROW + '=ERmany;', w, h, '', 'Many to many', false));
+			content.appendChild(this.createEdgeTemplate('edgeStyle=none;' + mxConstants.STYLE_STARTARROW + '=ERzeroToOne;' + mxConstants.STYLE_ENDARROW + '=ERzeroToMany;', w, h, '', '1 optional to many optional', false));
+			content.appendChild(this.createEdgeTemplate('edgeStyle=none;' + mxConstants.STYLE_STARTARROW + '=ERmandOne;' + mxConstants.STYLE_ENDARROW + '=ERzeroToMany;', w, h, '', '1 mandatory to many optional', false));
+			content.appendChild(this.createEdgeTemplate('edgeStyle=none;' + mxConstants.STYLE_STARTARROW + '=ERmandOne;' + mxConstants.STYLE_ENDARROW + '=ERoneToMany;', w, h, '', '1 mandatory to many mandatory', false));
+			content.appendChild(this.createEdgeTemplate('edgeStyle=none;' + mxConstants.STYLE_STARTARROW + '=ERzeroToOne;' + mxConstants.STYLE_ENDARROW + '=ERoneToMany;', w, h, '', '1 optional to many mandatory', false));
+			content.appendChild(this.createEdgeTemplate('edgeStyle=none;' + mxConstants.STYLE_STARTARROW + '=ERoneToMany;' + mxConstants.STYLE_ENDARROW + '=ERoneToMany;', w, h, '', 'Many mandatory to many mandatory', false));
+			content.appendChild(this.createEdgeTemplate('edgeStyle=none;' + mxConstants.STYLE_STARTARROW + '=ERzeroToMany;' + mxConstants.STYLE_ENDARROW + '=ERoneToMany;', w, h, '', 'Many optional to many mandatory', false));
+		}));
+	};
+	
+	// Adds iOS shapes
+	Sidebar.prototype.addIosPalette = function()
+	{
+		mxResources.parse('ios=iOS');
+		mxResources.parse('mxgraph.ios.iAddIcon=Add Icon');
+		mxResources.parse('mxgraph.ios.iAlertBox=Alert Box');
+		mxResources.parse('mxgraph.ios.iAlphaList=Alpha List');
+		mxResources.parse('mxgraph.ios.iAppBar=App Bar');
+		mxResources.parse('mxgraph.ios.iArrowIcon=Arrow Icon');
+		mxResources.parse('mxgraph.ios.iBgFlat=Flat Colored Background');
+		mxResources.parse('mxgraph.ios.iBgMap=Map Background');
+		mxResources.parse('mxgraph.ios.iBgStriped=Striped Background');
+		mxResources.parse('mxgraph.ios.iButton=Button');
+		mxResources.parse('mxgraph.ios.iButtonBack=Back Button');
+		mxResources.parse('mxgraph.ios.iButtonFw=Forward Button');
+		mxResources.parse('mxgraph.ios.iButtonBar=Button Bar');
+		mxResources.parse('mxgraph.ios.iCallButtons=Call Buttons');
+		mxResources.parse('mxgraph.ios.iCallDialog=Call Dialog');
+		mxResources.parse('mxgraph.ios.iCheckboxGroup=Checkbox Group');
+		mxResources.parse('mxgraph.ios.iCheckIcon=Check Icon');
+		mxResources.parse('mxgraph.ios.iCloudProgressBar=Cloud Progress Bar');
+		mxResources.parse('mxgraph.ios.iComboBox=Combo Box');
+		mxResources.parse('mxgraph.ios.iCopy=Copy');
+		mxResources.parse('mxgraph.ios.iCopyArea=Copy Area');
+		mxResources.parse('mxgraph.ios.iIconGrid=Icon Grid');
+		mxResources.parse('mxgraph.ios.iDeleteApp=Delete App');
+		mxResources.parse('mxgraph.ios.iDeleteIcon=Delete Icon');
+		mxResources.parse('mxgraph.ios.iDownloadBar=Download Bar');
+		mxResources.parse('mxgraph.ios.iDialogBox=Dialog Box');
+		mxResources.parse('mxgraph.ios.iDir=Direction');
+		mxResources.parse('mxgraph.ios.iHomePageControl=Home Page Control');
+		mxResources.parse('mxgraph.ios.iKeybLett=Keyboard (letters)');
+		mxResources.parse('mxgraph.ios.iKeybNumb=Keyboard (numbers)');
+		mxResources.parse('mxgraph.ios.iKeybSymb=Keyboard (symbols)');
+		mxResources.parse('mxgraph.ios.iLocBar=Location Bar');
+		mxResources.parse('mxgraph.ios.iLockButton=Lock Button');
+		mxResources.parse('mxgraph.ios.iHorButtonBar=Horizontal Button Bar');
+		mxResources.parse('mxgraph.ios.iInfoIcon=Info Icon');
+		mxResources.parse('mxgraph.ios.iOnOffButton=On/Off Button');
+		mxResources.parse('mxgraph.ios.iOption=Option');
+		mxResources.parse('mxgraph.ios.iPageControl=Page Control');
+		mxResources.parse('mxgraph.ios.iPad=iPad');
+		mxResources.parse('mxgraph.ios.iPhone=iPhone');
+		mxResources.parse('mxgraph.ios.iPin=Pin');
+		mxResources.parse('mxgraph.ios.iPrevNext=Prev/Next');
+		mxResources.parse('mxgraph.ios.iProgressBar=Progress Bar');
+		mxResources.parse('mxgraph.ios.iRadioGroup=Radio Group');
+		mxResources.parse('mxgraph.ios.iSlider=Slider');
+		mxResources.parse('mxgraph.ios.iSortFindIcon=Sort/Find Icon');
+		mxResources.parse('mxgraph.ios.iTextInput=Text Input');
+		mxResources.parse('mxgraph.ios.iTopBar=Top Bar');
+		mxResources.parse('mxgraph.ios.iTopBarLocked=Top Bar Locked');
+		mxResources.parse('mxgraph.ios.iURLBar=URL Bar');
+		mxResources.parse('mxgraph.ios.iVideoControls=Video Controls');
+			
+		this.addPalette('ios', 'iOS', false, mxUtils.bind(this, function(content)
+		{
+			var sizeX = 200; //reference size for iPhone and all other iOS shapes
+			
+			var sizeY = 2 * sizeX; //change only sizeX, to avoid changing aspect ratio
+			
+			var s = mxConstants.STYLE_VERTICAL_LABEL_POSITION + '=bottom;' + mxConstants.STYLE_VERTICAL_ALIGN + '=top;' + mxConstants.STYLE_STROKEWIDTH + '=1;';
+
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iPhone;bgStyle=bgGreen;' + mxConstants.STYLE_FILLCOLOR + '=#aaaaaa;', sizeX, sizeY, '', 'iPhone (portrait)', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iPhone;' + mxConstants.STYLE_DIRECTION + '=' + mxConstants.DIRECTION_NORTH + ';bgStyle=bgGreen;' + mxConstants.STYLE_FILLCOLOR + '=#aaaaaa;', sizeY, sizeX, '', 'iPhone (landscape)', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iPad;bgStyle=bgGreen;' + mxConstants.STYLE_FILLCOLOR + '=#aaaaaa;', sizeX * 2.425, sizeY * 1.5625, '', 'iPad (portrait)', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iPad;' + mxConstants.STYLE_DIRECTION + '=' + mxConstants.DIRECTION_NORTH + ';bgStyle=bgGreen;' + mxConstants.STYLE_FILLCOLOR + '=#aaaaaa;', sizeY * 1.5625, sizeX * 2.425, '', 'iPad (landscape)', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iBgFlat;' + mxConstants.STYLE_STROKECOLOR + '=#18211b;' + mxConstants.STYLE_FILLCOLOR + '=#ffffff', sizeX * 0.875, sizeY * 0.7, '', 'iPad background (white)', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iBgFlat;' + mxConstants.STYLE_STROKECOLOR + '=#18211b;' + mxConstants.STYLE_FILLCOLOR + '=#1f2923', sizeX * 0.875, sizeY * 0.7, '', 'iPad background (green)', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iBgFlat;' + mxConstants.STYLE_STROKECOLOR + '=#18211b;' + mxConstants.STYLE_FILLCOLOR + '=#dddddd', sizeX * 0.875, sizeY * 0.7, '', 'iPad background (gray)', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iBgStriped;' + mxConstants.STYLE_STROKECOLOR + '=#18211b;' + mxConstants.STYLE_FILLCOLOR + '=#5D7585;strokeColor2=#657E8F;', sizeX * 0.875, sizeY * 0.7, '', 'iPad background (striped)', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iBgMap;' + mxConstants.STYLE_STROKECOLOR + '=#18211b;' + mxConstants.STYLE_FILLCOLOR + '=#ffffff;strokeColor2=#008cff;fillColor2=#96D1FF;', sizeX * 0.875, sizeY * 0.7, '', 'iPad background (map)', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iButtonBar;' + mxConstants.STYLE_STROKECOLOR + '=#444444;strokeColor2=#c4c4c4;' + mxConstants.STYLE_FONTCOLOR + '=#666666;fillColor2=#ffffff;buttonText=+Item 1,+Item 2,Item 3,Item 4;' + mxConstants.STYLE_FONTSIZE + '=8;' + mxConstants.STYLE_FILLCOLOR + '=#ffffff;' + mxConstants.STYLE_STROKEWIDTH + '=0.5;', sizeX * 0.825, sizeY * 0.125, '', 'Button bar', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iAppBar;', sizeX * 0.87, sizeY * 0.0375, '', 'App bar (portrait)', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iAppBar;', sizeX * 1.395, sizeY * 0.0375, '', 'App bar (landscape)', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iTopBar;', sizeX * 0.87, sizeY * 0.0375, '', 'Top bar', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iTopBarLocked;', sizeX * 0.87, sizeY * 0.0375, '', 'Top bar locked', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iButton;' + mxConstants.STYLE_STROKECOLOR + '=#444444;textColor2=#ffffff;buttonText=Button;' + mxConstants.STYLE_FONTSIZE + '=8;' + mxConstants.STYLE_FILLCOLOR + '=#dddddd;fillColor2=#3D5565;' + mxConstants.STYLE_STROKEWIDTH + '=0.5;', sizeX * 0.2175, sizeY * 0.0375, '', 'Button', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iButtonBack;' + mxConstants.STYLE_STROKECOLOR + '=#444444;textColor2=#ffffff;buttonText=Button;' + mxConstants.STYLE_FONTSIZE + '=8;' + mxConstants.STYLE_FILLCOLOR + '=#dddddd;fillColor2=#3D5565;' + mxConstants.STYLE_STROKEWIDTH + '=0.5;', sizeX * 0.2175, sizeY * 0.0375, '', 'Back button', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iButtonFw;' + mxConstants.STYLE_STROKECOLOR + '=#444444;textColor2=#ffffff;buttonText=Button;' + mxConstants.STYLE_FONTSIZE + '=8;' + mxConstants.STYLE_FILLCOLOR + '=#dddddd;fillColor2=#3D5565;' + mxConstants.STYLE_STROKEWIDTH + '=0.5;', sizeX * 0.2175, sizeY * 0.0375, '', 'Forward button', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iPrevNext;' + mxConstants.STYLE_STROKECOLOR + '=#444444;' + mxConstants.STYLE_FILLCOLOR + '=#dddddd;fillColor2=#3D5565;fillColor3=#ffffff;' + mxConstants.STYLE_STROKEWIDTH + '=0.5;', sizeX * 0.2175, sizeY * 0.0375, '', 'Prev/next button', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iTextInput;' + mxConstants.STYLE_STROKECOLOR + '=#444444;textColor2=#000000;buttonText=Default text;' + mxConstants.STYLE_FONTSIZE + '=8;' + mxConstants.STYLE_FILLCOLOR + '=#ffffff;' + mxConstants.STYLE_STROKEWIDTH + '=0.5;', sizeX * 0.2175, sizeY * 0.0375, '', 'Text input', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iRadioGroup;' + mxConstants.STYLE_STROKECOLOR + '=#666666;textColor2=#666666;buttonText=Option 1,Option 2,+Option 3,Option 4;' + mxConstants.STYLE_FONTSIZE + '=8;' + mxConstants.STYLE_FILLCOLOR + '=#ffffff;' + mxConstants.STYLE_STROKEWIDTH + '=0.5;', sizeX * 0.825, sizeY * 0.125, '', 'Radiobuttons', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iCheckboxGroup;' + mxConstants.STYLE_STROKECOLOR + '=#666666;textColor2=#666666;buttonText=Setting 1,Setting 2,+Setting 3,Setting 4;' + mxConstants.STYLE_FONTSIZE + '=8;' + mxConstants.STYLE_FILLCOLOR + '=#ffffff;' + mxConstants.STYLE_STROKEWIDTH + '=0.5;', sizeX * 0.825, sizeY * 0.125, '', 'Checkboxes', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iComboBox;' + mxConstants.STYLE_STROKECOLOR + '=#444444;textColor2=#666666;buttonText=Option 1;' + mxConstants.STYLE_FONTSIZE + '=8;' + mxConstants.STYLE_FILLCOLOR + '=#dddddd;fillColor2=#3D5565;' + mxConstants.STYLE_STROKEWIDTH + '=0.5;', sizeX * 0.29, sizeY * 0.0375, '', 'Combobox', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iOnOffButton;' + mxConstants.STYLE_STROKECOLOR + '=#444444;' + mxConstants.STYLE_STROKEWIDTH + '=0.5;buttonState=on', sizeX * 0.2175, sizeY * 0.0375, '', 'On-off button', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iTextInput;' + mxConstants.STYLE_STROKECOLOR + '=#444444;textColor2=#000000;buttonText=********;' + mxConstants.STYLE_FONTSIZE + '=8;' + mxConstants.STYLE_FILLCOLOR + '=#ffffff;' + mxConstants.STYLE_STROKEWIDTH + '=0.5;', sizeX * 0.2175, sizeY * 0.0375, '', 'Password field', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iAlertBox;buttonText=Something happened,Button text,Alert description text,description text second line;', sizeX * 0.75, sizeY * 0.25, '', 'Alert box', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iDialogBox;buttonText=Something happened,Cancel,OK,Alert description text,description text second line;', sizeX * 0.75, sizeY * 0.25, '', 'Dialog box', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iLockButton;', sizeX * 0.87, sizeY * 0.125, '', 'Lock button', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iArrowIcon;' + mxConstants.STYLE_FILLCOLOR + '=#8BbEff;fillColor2=#135Ec8;' + mxConstants.STYLE_STROKECOLOR + '=#ffffff;', sizeX * 0.075, sizeY * 0.0375, '', 'Arrow', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iDeleteIcon;' + mxConstants.STYLE_FILLCOLOR + '=#e8878E;fillColor2=#BD1421;' + mxConstants.STYLE_STROKECOLOR + '=#ffffff;', sizeX * 0.075, sizeY * 0.0375, '', 'Delete', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iAddIcon;' + mxConstants.STYLE_FILLCOLOR + '=#7AdF78;fillColor2=#1A9917;' + mxConstants.STYLE_STROKECOLOR + '=#ffffff;', sizeX * 0.075, sizeY * 0.0375, '', 'Add', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iInfoIcon;' + mxConstants.STYLE_FILLCOLOR + '=#8BbEff;fillColor2=#135Ec8;' + mxConstants.STYLE_STROKECOLOR + '=#ffffff;', sizeX * 0.075, sizeY * 0.0375, '', 'Info', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iSortFindIcon;' + mxConstants.STYLE_FILLCOLOR + '=#8BbEff;fillColor2=#135Ec8;' + mxConstants.STYLE_STROKECOLOR + '=#ffffff;', sizeX * 0.075, sizeY * 0.0375, '', 'Sort/find', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iCheckIcon;' + mxConstants.STYLE_FILLCOLOR + '=#e8878E;fillColor2=#BD1421;' + mxConstants.STYLE_STROKECOLOR + '=#ffffff;', sizeX * 0.075, sizeY * 0.0375, '', 'Check', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iKeybLett;', sizeX * 0.87, sizeY * 0.25, '', 'Keyboard (letters)', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iKeybNumb;', sizeX * 0.87, sizeY * 0.25, '', 'Keyboard (numbers)', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iKeybSymb;', sizeX * 0.87, sizeY * 0.25, '', 'Keyboard (symbols)', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iDeleteApp;' + mxConstants.STYLE_FILLCOLOR + '=#cccccc;fillColor2=#000000;' + mxConstants.STYLE_STROKECOLOR + '=#ffffff;', sizeX * 0.075, sizeY * 0.0375, '', 'Delete app', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iDir;', sizeX * 0.5, sizeY * 0.25, '', 'Direction', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iLocBar;barPos=80;pointerPos=bottom;buttonText=' + '5th Street Music Store', sizeX * 0.775, sizeY * 0.08125, '', 'Location bar', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iCallDialog;', sizeX * 0.75, sizeY * 0.3125, '', 'Call Dialog', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iCallButtons;', sizeX * 0.87, sizeY * 0.575, '', 'Call buttons', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iOption;barPos=80;pointerPos=bottom;buttonText=' + 'Option', sizeX * 0.375, sizeY * 0.06875, '', 'Option', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iAlphaList;' + mxConstants.STYLE_FONTSIZE + '=7.5;'+ mxConstants.STYLE_STROKEWIDTH + '=0.5;', sizeX * 0.075, sizeY * 0.5625, '', 'Alphabet list', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iHorButtonBar;' + mxConstants.STYLE_STROKECOLOR + '=#444444;strokeColor2=#c4c4c4;' + mxConstants.STYLE_FONTCOLOR + '=#666666;fillColor2=#ffffff;buttonText=+Item 1,+Item 2,Item 3,Item 4;' + mxConstants.STYLE_FONTSIZE + '=8;' + mxConstants.STYLE_FILLCOLOR + '=#ffffff;fillColor2=#008cff', sizeX * 0.825, sizeY * 0.03125, '', 'Horizontal button bar', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iPin;fillColor2=#00dd00;fillColor3=#004400;' + mxConstants.STYLE_STROKECOLOR + '=#006600;', sizeX * 0.05, sizeY * 0.0625, '', 'Pin', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iPin;fillColor2=#dd0000;fillColor3=#440000;' + mxConstants.STYLE_STROKECOLOR + '=#660000;', sizeX * 0.05, sizeY * 0.0625, '', 'Pin', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iPin;fillColor2=#ccccff;fillColor3=#0000ff;' + mxConstants.STYLE_STROKECOLOR + '=#000066;', sizeX * 0.05, sizeY * 0.0625, '', 'Pin', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iPin;fillColor2=#ffff00;fillColor3=#888800;' + mxConstants.STYLE_STROKECOLOR + '=#999900;', sizeX * 0.05, sizeY * 0.0625, '', 'Pin', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iPin;fillColor2=#ffa500;fillColor3=#885000;' + mxConstants.STYLE_STROKECOLOR + '=#997000;', sizeX * 0.05, sizeY * 0.0625, '', 'Pin', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iVideoControls;barPos=10;', sizeX * 0.87, sizeY * 0.125, '', 'Video controls', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iURLBar;buttonText=Page title,http://www.draw.io,Cancel;', sizeX * 0.87, sizeY * 0.075, '', 'URL bar', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iSlider;barPos=20;', sizeX * 0.75, sizeY * 0.025, '', 'Slider', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iProgressBar;barPos=40;', sizeX * 0.75, sizeY * 0.025, '', 'Progress bar', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iCloudProgressBar;barPos=20;', sizeX * 0.75, sizeY * 0.025, '', 'Cloud progress bar', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iDownloadBar;buttonText=Downloading 4 of 6' + ';barPos=30;', sizeX * 0.87, sizeY * 0.075, '', 'Download bar', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iScreenNameBar;fillColor2=#000000;fillColor3=#ffffff;buttonText=Screen Name;textColor=#ffffff', sizeX * 0.87, sizeY * 0.0625, '', 'Screen name bar', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iIconGrid;' + mxConstants.STYLE_FILLCOLOR + '=#ffffff;' + mxConstants.STYLE_STROKECOLOR + '=#000000;gridSize=3,3;' + mxConstants.STYLE_STROKEWIDTH + '=0.5;', sizeX * 0.75, sizeY * 0.375, '', 'Icon grid', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iCopy;' + mxConstants.STYLE_FILLCOLOR + '=#000000;' + mxConstants.STYLE_STROKECOLOR + '=#000000;' + mxConstants.STYLE_STROKEWIDTH + '=0.5;buttonText=Copy;textColor=#ffffff;fillColor2=#000000;fillColor3=#ffffff;', sizeX * 0.2, sizeY * 0.06875, '', 'Copy', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iCopyArea;' + mxConstants.STYLE_STROKECOLOR + '=#000000;' + mxConstants.STYLE_STROKEWIDTH + '=0.5;buttonText=Copy;textColor=#ffffff;fillColor2=#000000;fillColor3=#ffffff;', sizeX * 0.3, sizeY * 0.2, '', 'Copy area', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iHomePageControl;' + mxConstants.STYLE_FILLCOLOR + '=#666666;' + mxConstants.STYLE_STROKECOLOR + '=#cccccc;' + mxConstants.STYLE_STROKEWIDTH + '=0.5;', sizeX * 0.25, sizeY * 0.0125, '', 'Home page control', false));
+			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iPageControl;' + mxConstants.STYLE_FILLCOLOR + '=#666666;' + mxConstants.STYLE_STROKECOLOR + '=#cccccc;', sizeX * 0.25, sizeY * 0.0125, '', 'Page control', false));
 		}));
 	};
 })();

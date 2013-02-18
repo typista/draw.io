@@ -1,5 +1,5 @@
 /**
- * $Id: mxMockupContainers.js,v 1.1 2013-01-16 16:06:57 gaudenz Exp $
+ * $Id: mxMockupContainers.js,v 1.6 2013-02-13 16:05:21 mate Exp $
  * Copyright (c) 2006-2010, JGraph Ltd
  */
 
@@ -23,6 +23,16 @@ function mxShapeMockupVideoPlayer(bounds, fill, stroke, strokewidth)
  */
 mxUtils.extend(mxShapeMockupVideoPlayer, mxShape);
 
+mxShapeMockupVideoPlayer.prototype.cst = {
+		FILL_COLOR2 : 'fillColor2',
+		TEXT_COLOR : 'textColor',
+		STROKE_COLOR2 : 'strokeColor2',
+		STROKE_COLOR3 : 'strokeColor3',
+		SHAPE_VIDEO_PLAYER : 'mxgraph.mockup.containers.videoPlayer',
+		BAR_POS : 'barPos',
+		BAR_HEIGHT : 'barHeight'
+};
+
 /**
  * Function: paintVertexShape
  * 
@@ -31,14 +41,19 @@ mxUtils.extend(mxShapeMockupVideoPlayer, mxShape);
 mxShapeMockupVideoPlayer.prototype.paintVertexShape = function(c, x, y, w, h)
 {
 	var bgColor = mxUtils.getValue(this.style, mxConstants.STYLE_FILLCOLOR, '#ffffff');
-	var buttonColor = mxUtils.getValue(this.style, mxMockupC.STYLE_FILLCOLOR2, '#c4c4c4');
+	var buttonColor = mxUtils.getValue(this.style, mxShapeMockupVideoPlayer.prototype.cst.FILL_COLOR2, '#c4c4c4');
 	var frameColor = mxUtils.getValue(this.style, mxConstants.STYLE_STROKECOLOR, '#666666');
-	var filledColor = mxUtils.getValue(this.style, mxMockupC.STYLE_STROKECOLOR2, '#008cff');
-	var emptyColor = mxUtils.getValue(this.style, mxMockupC.STYLE_STROKECOLOR3, '#c4c4c4');
+	var filledColor = mxUtils.getValue(this.style, mxShapeMockupVideoPlayer.prototype.cst.STROKE_COLOR2, '#008cff');
+	var emptyColor = mxUtils.getValue(this.style, mxShapeMockupVideoPlayer.prototype.cst.STROKE_COLOR3, '#c4c4c4');
+	var barHeight = mxUtils.getValue(this.style, mxShapeMockupVideoPlayer.prototype.cst.BAR_HEIGHT, '30');
+
+	w = Math.max(w, 5 * barHeight);
+	h = Math.max(h, barHeight + 10);
+
 	c.translate(x, y);
 	this.background(c, x, y, w, h, bgColor, frameColor);
 	c.setShadow(false);
-	this.otherShapes(c, x, y, w, h, buttonColor, frameColor, filledColor, emptyColor);
+	this.otherShapes(c, x, y, w, h, buttonColor, frameColor, filledColor, emptyColor, barHeight);
 };
 
 mxShapeMockupVideoPlayer.prototype.background = function(c, x, y, w, h, bgColor, frameColor)
@@ -54,13 +69,12 @@ mxShapeMockupVideoPlayer.prototype.background = function(c, x, y, w, h, bgColor,
 	c.fillAndStroke();
 };
 
-mxShapeMockupVideoPlayer.prototype.otherShapes = function(c, x, y, w, h, buttonColor, frameColor, filledColor, emptyColor)
+mxShapeMockupVideoPlayer.prototype.otherShapes = function(c, x, y, w, h, buttonColor, frameColor, filledColor, emptyColor, barHeight)
 {
-	var barPos = mxUtils.getValue(this.style, mxMockupC.BAR_POS, '20');
+	var barPos = mxUtils.getValue(this.style, mxShapeMockupVideoPlayer.prototype.cst.BAR_POS, '20');
 	barPos = Math.max(0, barPos);
 	barPos = Math.min(100, barPos);
 
-	var barHeight = mxUtils.getValue(this.style, mxMockupC.BAR_HEIGHT, '30');
 	var strokeWidth = mxUtils.getValue(this.style, mxConstants.STYLE_STROKEWIDTH, '1');
 	var buttonR = 8;
 	var barY = h - barHeight;
@@ -98,8 +112,8 @@ mxShapeMockupVideoPlayer.prototype.otherShapes = function(c, x, y, w, h, buttonC
 	var iconSize = barHeight * 0.3;
 	var iconY = h - (barHeight + iconSize) * 0.5;
 	var iconX = barHeight * 0.3;
-	c.setFillColor(emptyColor);
-	c.setStrokeColor(emptyColor);
+	c.setFillColor(buttonColor);
+	c.setStrokeColor(buttonColor);
 
 	//play icon
 	c.begin();
@@ -148,13 +162,14 @@ mxShapeMockupVideoPlayer.prototype.otherShapes = function(c, x, y, w, h, buttonC
 	c.lineTo(screenX + barHeight * 0.75, speakerY + barHeight * 0.7);
 	c.stroke();
 
+	var textColor = mxUtils.getValue(this.style, mxShapeMockupVideoPlayer.prototype.cst.TEXT_COLOR, '#666666');
 	c.begin();
 	c.setFontSize(barHeight * 0.5);
-	c.setFontColor(emptyColor);
+	c.setFontColor(textColor);
 	c.text(barHeight * 1.9, h - barHeight * 0.45, 0, 0, '0:00/3:53', mxConstants.ALIGN_LEFT, mxConstants.ALIGN_MIDDLE, 0, null, 0, 0, 0);
 };
 
-mxCellRenderer.prototype.defaultShapes[mxMockupC.SHAPE_VIDEO_PLAYER] = mxShapeMockupVideoPlayer;
+mxCellRenderer.prototype.defaultShapes[mxShapeMockupVideoPlayer.prototype.cst.SHAPE_VIDEO_PLAYER] = mxShapeMockupVideoPlayer;
 
 //**********************************************************************************************************************************************************
 //Accordion
@@ -176,6 +191,17 @@ function mxShapeMockupAccordion(bounds, fill, stroke, strokewidth)
  */
 mxUtils.extend(mxShapeMockupAccordion, mxShape);
 
+mxShapeMockupAccordion.prototype.cst = {
+		TEXT_COLOR : 'textColor',
+		TEXT_COLOR2 : 'textColor2',
+		TEXT_SIZE : 'textSize',
+		SHAPE_ACCORDION : 'mxgraph.mockup.containers.accordion',
+		STROKE_COLOR2 : 'strokeColor2',
+		FILL_COLOR2 : 'fillColor2',
+		SELECTED : '+',			// must be 1 char
+		MAIN_TEXT : 'mainText'
+};
+
 /**
  * Function: paintVertexShape
  * 
@@ -183,14 +209,14 @@ mxUtils.extend(mxShapeMockupAccordion, mxShape);
  */
 mxShapeMockupAccordion.prototype.paintVertexShape = function(c, x, y, w, h)
 {
-	var textStrings = mxUtils.getValue(this.style, mxMockupC.BUTTON_TEXT, '+Group 1, Group 2, Group 3').toString().split(',');
-	var fontColor = mxUtils.getValue(this.style, mxMockupC.STYLE_TEXTCOLOR, '#666666');
-	var selectedFontColor = mxUtils.getValue(this.style, mxMockupC.STYLE_TEXTCOLOR2, '#ffffff');
-	var fontSize = mxUtils.getValue(this.style, mxConstants.STYLE_FONTSIZE, '17').toString();
+	var textStrings = mxUtils.getValue(this.style, mxShapeMockupAccordion.prototype.cst.MAIN_TEXT, '+Group 1, Group 2, Group 3').toString().split(',');
+	var fontColor = mxUtils.getValue(this.style, mxShapeMockupAccordion.prototype.cst.TEXT_COLOR, '#666666');
+	var selectedFontColor = mxUtils.getValue(this.style, mxShapeMockupAccordion.prototype.cst.TEXT_COLOR2, '#ffffff');
+	var fontSize = mxUtils.getValue(this.style, mxShapeMockupAccordion.prototype.cst.TEXT_SIZE, '17').toString();
 	var frameColor = mxUtils.getValue(this.style, mxConstants.STYLE_STROKECOLOR, '#666666');
-	var separatorColor = mxUtils.getValue(this.style, mxMockupC.STYLE_STROKECOLOR2, '#c4c4c4');
+	var separatorColor = mxUtils.getValue(this.style, mxShapeMockupAccordion.prototype.cst.STROKE_COLOR2, '#c4c4c4');
 	var bgColor = mxUtils.getValue(this.style, mxConstants.STYLE_FILLCOLOR, '#ffffff');
-	var selectedFillColor = mxUtils.getValue(this.style, mxMockupC.STYLE_FILLCOLOR2, '#008cff');
+	var selectedFillColor = mxUtils.getValue(this.style, mxShapeMockupAccordion.prototype.cst.FILL_COLOR2, '#008cff');
 	var buttonNum = textStrings.length;
 	var maxButtonWidth = 0;
 	var selectedButton = -1;
@@ -201,7 +227,7 @@ mxShapeMockupAccordion.prototype.paintVertexShape = function(c, x, y, w, h)
 	{
 		var buttonText = textStrings[i];
 
-		if(buttonText.charAt(0) === mxMockupC.SELECTED)
+		if(buttonText.charAt(0) === mxShapeMockupAccordion.prototype.cst.SELECTED)
 		{
 			buttonText = textStrings[i].substring(1);
 			selectedButton = i;
@@ -325,7 +351,7 @@ mxShapeMockupAccordion.prototype.background = function(c, w, h, rSize, buttonNum
 
 mxShapeMockupAccordion.prototype.buttonText = function(c, w, h, textString, fontSize)
 {
-	if(textString.charAt(0) === mxMockupC.SELECTED)
+	if(textString.charAt(0) === mxShapeMockupAccordion.prototype.cst.SELECTED)
 	{
 		textString = textString.substring(1);
 	}
@@ -335,14 +361,14 @@ mxShapeMockupAccordion.prototype.buttonText = function(c, w, h, textString, font
 	c.text((w * 0.5), h, 0, 0, textString, mxConstants.ALIGN_CENTER, mxConstants.ALIGN_MIDDLE, 0, null, 0, 0, 0);
 };
 
-mxCellRenderer.prototype.defaultShapes[mxMockupC.SHAPE_ACCORDION] = mxShapeMockupAccordion;
+mxCellRenderer.prototype.defaultShapes[mxShapeMockupAccordion.prototype.cst.SHAPE_ACCORDION] = mxShapeMockupAccordion;
 
 //**********************************************************************************************************************************************************
 //Browser Window
 //**********************************************************************************************************************************************************
 /**
-* Extends mxShape.
-*/
+ * Extends mxShape.
+ */
 function mxShapeMockupBrowserWindow(bounds, fill, stroke, strokewidth)
 {
 	mxShape.call(this);
@@ -353,21 +379,28 @@ function mxShapeMockupBrowserWindow(bounds, fill, stroke, strokewidth)
 };
 
 /**
-* Extends mxShape.
-*/
+ * Extends mxShape.
+ */
 mxUtils.extend(mxShapeMockupBrowserWindow, mxShape);
 
+mxShapeMockupBrowserWindow.prototype.cst = {
+		STROKE_COLOR2 : 'strokeColor2',
+		STROKE_COLOR3 : 'strokeColor3',
+		SHAPE_BROWSER_WINDOW : 'mxgraph.mockup.containers.browserWindow'
+
+};
+
 /**
-* Function: paintVertexShape
-* 
-* Paints the vertex shape.
-*/
+ * Function: paintVertexShape
+ * 
+ * Paints the vertex shape.
+ */
 mxShapeMockupBrowserWindow.prototype.paintVertexShape = function(c, x, y, w, h)
 {
 	var bgColor = mxUtils.getValue(this.style, mxConstants.STYLE_FILLCOLOR, '#ffffff');
 	var frameColor = mxUtils.getValue(this.style, mxConstants.STYLE_STROKECOLOR, '#666666');
-	var closeColor = mxUtils.getValue(this.style, mxMockupC.STYLE_STROKECOLOR2, '#008cff');
-	var insideColor = mxUtils.getValue(this.style, mxMockupC.STYLE_STROKECOLOR3, '#c4c4c4');
+	var closeColor = mxUtils.getValue(this.style, mxShapeMockupBrowserWindow.prototype.cst.STROKE_COLOR2, '#008cff');
+	var insideColor = mxUtils.getValue(this.style, mxShapeMockupBrowserWindow.prototype.cst.STROKE_COLOR3, '#c4c4c4');
 	c.translate(x, y);
 	this.background(c, x, y, w, h, bgColor, frameColor);
 	c.setShadow(false);
@@ -393,19 +426,16 @@ mxShapeMockupBrowserWindow.prototype.otherShapes = function(c, x, y, w, h, frame
 
 	//window buttons
 	c.setStrokeColor(frameColor);
-	c.begin();
-	c.ellipse(w - 80, 10, 20, 20);
+	c.ellipse(w - 75, 5, 20, 20);
 	c.stroke();
-	
-	c.begin();
-	c.ellipse(w - 55, 10, 20, 20);
+
+	c.ellipse(w - 50, 5, 20, 20);
 	c.stroke();
-	
+
 	c.setStrokeColor(closeColor);
-	c.begin();
-	c.ellipse(w - 30, 10, 20, 20);
+	c.ellipse(w - 25, 5, 20, 20);
 	c.stroke();
-	
+
 	c.setStrokeColor(insideColor);
 	//lines
 	c.begin();
@@ -418,12 +448,12 @@ mxShapeMockupBrowserWindow.prototype.otherShapes = function(c, x, y, w, h, frame
 	c.lineTo(175, 40);
 	c.lineTo(w, 40);
 	c.stroke();
-	
+
 	c.begin();
 	c.moveTo(0, 110);
 	c.lineTo(w, 110);
 	c.stroke();
-	
+
 	//address field
 	c.begin();
 	c.moveTo(100, 60);
@@ -436,14 +466,15 @@ mxShapeMockupBrowserWindow.prototype.otherShapes = function(c, x, y, w, h, frame
 	c.arcTo(5, 5, 0, 0, 1, 100, 85);
 	c.close();
 	c.stroke();
-	
+
 	//text
-	c.setFontColor(frameColor);
+	var textColor = mxUtils.getValue(this.style, mxShapeMockupBrowserWindow.prototype.cst.TEXT_COLOR, '#666666');
+	c.setFontColor(textColor);
 	c.setFontSize(17);
 	c.text(65, 25, 0, 0, 'Page 1', mxConstants.ALIGN_LEFT, mxConstants.ALIGN_MIDDLE, 0, null, 0, 0, 0);
 	c.text(130, 73, 0, 0, 'http://www.draw.io', mxConstants.ALIGN_LEFT, mxConstants.ALIGN_MIDDLE, 0, null, 0, 0, 0);
 	c.stroke();
-	
+
 	//icon on tab
 	c.translate(37, 17);
 	c.begin();
@@ -454,7 +485,7 @@ mxShapeMockupBrowserWindow.prototype.otherShapes = function(c, x, y, w, h, frame
 	c.lineTo(0, 18);
 	c.close();
 	c.stroke();
-	
+
 	c.setStrokeWidth(strokeWidth * 0.5); //maybe because of this (read later)
 	c.begin();
 	c.moveTo(11, 0);
@@ -473,14 +504,14 @@ mxShapeMockupBrowserWindow.prototype.otherShapes = function(c, x, y, w, h, frame
 	c.lineTo(0, 18);
 	c.close();
 	c.stroke();
-	
+
 	c.setStrokeWidth(strokeWidth * 0.5);
 	c.begin();
 	c.moveTo(11, 0);
 	c.lineTo(11, 4);
 	c.lineTo(15, 5);
 	c.stroke();
-	
+
 	//back
 	var iSi = 20; //icon size
 	c.setFillColor(insideColor);
@@ -496,7 +527,7 @@ mxShapeMockupBrowserWindow.prototype.otherShapes = function(c, x, y, w, h, frame
 	c.lineTo(iSi * 0.5, iSi);
 	c.close();
 	c.fillAndStroke();
-	
+
 	//forward
 	c.begin();
 	c.translate(30, 0);
@@ -509,7 +540,7 @@ mxShapeMockupBrowserWindow.prototype.otherShapes = function(c, x, y, w, h, frame
 	c.lineTo(iSi * 0.5, iSi);
 	c.close();
 	c.fillAndStroke();
-	
+
 	//refresh
 	c.begin();
 	c.translate(30, 0);
@@ -524,14 +555,14 @@ mxShapeMockupBrowserWindow.prototype.otherShapes = function(c, x, y, w, h, frame
 	c.fillAndStroke();
 };
 
-mxCellRenderer.prototype.defaultShapes[mxMockupC.SHAPE_BROWSER_WINDOW] = mxShapeMockupBrowserWindow;
+mxCellRenderer.prototype.defaultShapes[mxShapeMockupBrowserWindow.prototype.cst.SHAPE_BROWSER_WINDOW] = mxShapeMockupBrowserWindow;
 
 //**********************************************************************************************************************************************************
 //User, Male
 //**********************************************************************************************************************************************************
 /**
-* Extends mxShape.
-*/
+ * Extends mxShape.
+ */
 function mxShapeMockupUserMale(bounds, fill, stroke, strokewidth)
 {
 	mxShape.call(this);
@@ -542,20 +573,25 @@ function mxShapeMockupUserMale(bounds, fill, stroke, strokewidth)
 };
 
 /**
-* Extends mxShape.
-*/
+ * Extends mxShape.
+ */
 mxUtils.extend(mxShapeMockupUserMale, mxShape);
 
+mxShapeMockupUserMale.prototype.cst = {
+		STROKE_COLOR2 : 'strokeColor2',
+		SHAPE_MALE_USER : 'mxgraph.mockup.containers.userMale'
+};
+
 /**
-* Function: paintVertexShape
-* 
-* Paints the vertex shape.
-*/
+ * Function: paintVertexShape
+ * 
+ * Paints the vertex shape.
+ */
 mxShapeMockupUserMale.prototype.paintVertexShape = function(c, x, y, w, h)
 {
 	var bgColor = mxUtils.getValue(this.style, mxConstants.STYLE_FILLCOLOR, '#ffffff');
 	var frameColor = mxUtils.getValue(this.style, mxConstants.STYLE_STROKECOLOR, '#666666');
-	var insideColor = mxUtils.getValue(this.style, mxMockupC.STYLE_STROKECOLOR2, '#008cff');
+	var insideColor = mxUtils.getValue(this.style, mxShapeMockupUserMale.prototype.cst.STROKE_COLOR2, '#008cff');
 	c.translate(x, y);
 	this.background(c, x, y, w, h, bgColor, frameColor);
 	c.setShadow(false);
@@ -588,7 +624,7 @@ mxShapeMockupUserMale.prototype.otherShapes = function(c, x, y, w, h, insideColo
 	c.curveTo(w * 0.3126, h * 0.2762, w * 0.3124, h * 0.2212, w * 0.332, h * 0.1939);
 	c.curveTo(w * 0.354, h * 0.1633, w * 0.4382, h * 0.12, w * 0.5, h * 0.12);
 	c.stroke();
-	
+
 	//left ear
 	c.begin();
 	c.moveTo(w * 0.3046, h * 0.3716);
@@ -624,18 +660,18 @@ mxShapeMockupUserMale.prototype.otherShapes = function(c, x, y, w, h, insideColo
 	c.curveTo(w * 0.365, h * 0.7427, w * 0.3772, h * 0.8076, w * 0.4286, h * 0.8224);
 	c.curveTo(w * 0.4816, h * 0.8377, w * 0.5028, h * 0.8347, w * 0.5028, h * 0.8347);
 	c.stroke();
-	
+
 	c.begin();
 	c.moveTo(w * 0.3322, h * 0.7764);
 	c.curveTo(w * 0.3322, h * 0.7764, w * 0.3556, h * 0.8386, w * 0.4038, h * 0.8684);
 	c.curveTo(w * 0.4533, h * 0.8991, w * 0.5029, h * 0.8929, w * 0.5029, h * 0.8929);
 	c.stroke();
-	
+
 	c.begin();
 	c.moveTo(w * 0.2717, h * 0.9);
 	c.lineTo(w * 0.2717, h);
 	c.stroke();
-	
+
 	c.begin();
 	c.moveTo(w * 0.1671, h * 0.8991);
 	c.curveTo(w * 0.1671, h * 0.8991, w * 0.1726, h * 0.9114, w * 0.1836, h * 0.9481);
@@ -650,7 +686,7 @@ mxShapeMockupUserMale.prototype.otherShapes = function(c, x, y, w, h, insideColo
 	c.curveTo(w * 0.6847, h * 0.2762, w * 0.6876, h * 0.2212, w * 0.668, h * 0.1939);
 	c.curveTo(w * 0.646, h * 0.1633, w * 0.5618, h * 0.12, w * 0.5, h * 0.12);
 	c.stroke();
-	
+
 	//right ear
 	c.begin();
 	c.moveTo(w * 0.6954, h * 0.3716);
@@ -686,24 +722,24 @@ mxShapeMockupUserMale.prototype.otherShapes = function(c, x, y, w, h, insideColo
 	c.curveTo(w * 0.635, h * 0.7427, w * 0.6228, h * 0.8076, w * 0.5714, h * 0.8224);
 	c.curveTo(w * 0.5184, h * 0.8377, w * 0.4972, h * 0.8347, w * 0.4972, h * 0.8347);
 	c.stroke();
-	
+
 	c.begin();
 	c.moveTo(w * 0.6678, h * 0.7764);
 	c.curveTo(w * 0.6678, h * 0.7764, w * 0.6444, h * 0.8386, w * 0.5962, h * 0.8684);
 	c.curveTo(w * 0.5467, h * 0.8991, w * 0.4971, h * 0.8929, w * 0.4971, h * 0.8929);
 	c.stroke();
-	
+
 	c.begin();
 	c.moveTo(w * 0.7283, h * 0.9);
 	c.lineTo(w * 0.7283, h);
 	c.stroke();
-	
+
 	c.begin();
 	c.moveTo(w * 0.8329, h * 0.8991);
 	c.curveTo(w * 0.8329, h * 0.8991, w * 0.8274, h * 0.9114, w * 0.8164, h * 0.9481);
 	c.curveTo(w * 0.8054, h * 0.9849, w * 0.8, h, w * 0.8, h);
 	c.stroke();
-	
+
 	c.setStrokeColor(frameColor);
 	c.begin();
 	c.moveTo(0, 0);
@@ -714,14 +750,14 @@ mxShapeMockupUserMale.prototype.otherShapes = function(c, x, y, w, h, insideColo
 	c.stroke();
 };
 
-mxCellRenderer.prototype.defaultShapes[mxMockupC.SHAPE_USER_MALE] = mxShapeMockupUserMale;
+mxCellRenderer.prototype.defaultShapes[mxShapeMockupUserMale.prototype.cst.SHAPE_MALE_USER] = mxShapeMockupUserMale;
 
 //**********************************************************************************************************************************************************
 //User, Female
 //**********************************************************************************************************************************************************
 /**
-* Extends mxShape.
-*/
+ * Extends mxShape.
+ */
 function mxShapeMockupUserFemale(bounds, fill, stroke, strokewidth)
 {
 	mxShape.call(this);
@@ -732,20 +768,25 @@ function mxShapeMockupUserFemale(bounds, fill, stroke, strokewidth)
 };
 
 /**
-* Extends mxShape.
-*/
+ * Extends mxShape.
+ */
 mxUtils.extend(mxShapeMockupUserFemale, mxShape);
 
+mxShapeMockupUserFemale.prototype.cst = {
+		STROKE_COLOR2 : 'strokeColor2',
+		SHAPE_FEMALE_USER : 'mxgraph.mockup.containers.userFemale'
+};
+
 /**
-* Function: paintVertexShape
-* 
-* Paints the vertex shape.
-*/
+ * Function: paintVertexShape
+ * 
+ * Paints the vertex shape.
+ */
 mxShapeMockupUserFemale.prototype.paintVertexShape = function(c, x, y, w, h)
 {
 	var bgColor = mxUtils.getValue(this.style, mxConstants.STYLE_FILLCOLOR, '#ffffff');
 	var frameColor = mxUtils.getValue(this.style, mxConstants.STYLE_STROKECOLOR, '#666666');
-	var insideColor = mxUtils.getValue(this.style, mxMockupC.STYLE_STROKECOLOR2, '#008cff');
+	var insideColor = mxUtils.getValue(this.style, mxShapeMockupUserFemale.prototype.cst.STROKE_COLOR2, '#008cff');
 	c.translate(x, y);
 	this.background(c, x, y, w, h, bgColor, frameColor);
 	c.setShadow(false);
@@ -817,7 +858,7 @@ mxShapeMockupUserFemale.prototype.otherShapes = function(c, x, y, w, h, insideCo
 	c.moveTo(w * 0.2995, h * 0.9106);
 	c.lineTo(w * 0.2995, h);
 	c.stroke();
-	
+
 	c.begin();
 	c.moveTo(w * 0.2081, h * 0.907);
 	c.curveTo(w * 0.2081, h * 0.907, w * 0.2131, h * 0.9194, w * 0.2232, h * 0.9565);
@@ -856,7 +897,7 @@ mxShapeMockupUserFemale.prototype.otherShapes = function(c, x, y, w, h, insideCo
 	c.moveTo(w * 0.6545, h * 0.6802);
 	c.lineTo(w * 0.6545, h * 0.3986);
 	c.stroke();
-	
+
 	c.begin();
 	c.moveTo(w * 0.7132, h * 0.8078);
 	c.curveTo(w * 0.7132, h * 0.8078, w * 0.6839, h * 0.916, w * 0.6237, h * 0.9678);
@@ -889,7 +930,7 @@ mxShapeMockupUserFemale.prototype.otherShapes = function(c, x, y, w, h, insideCo
 	c.lineTo(w * 0.6697, h * 0.7625);
 	c.lineTo(w * 0.62, h * 0.7625);
 	c.stroke();
-	
+
 	c.setStrokeColor(frameColor);
 	c.begin();
 	c.moveTo(0, 0);
@@ -900,4 +941,761 @@ mxShapeMockupUserFemale.prototype.otherShapes = function(c, x, y, w, h, insideCo
 	c.stroke();
 };
 
-mxCellRenderer.prototype.defaultShapes[mxMockupC.SHAPE_USER_FEMALE] = mxShapeMockupUserFemale;
+mxCellRenderer.prototype.defaultShapes[mxShapeMockupUserFemale.prototype.cst.SHAPE_FEMALE_USER] = mxShapeMockupUserFemale;
+
+//**********************************************************************************************************************************************************
+//Group
+//**********************************************************************************************************************************************************
+/**
+ * Extends mxShape.
+ */
+function mxShapeMockupGroup(bounds, fill, stroke, strokewidth)
+{
+	mxShape.call(this);
+	this.bounds = bounds;
+	this.fill = fill;
+	this.stroke = stroke;
+	this.strokewidth = (strokewidth != null) ? strokewidth : 1;
+};
+
+/**
+ * Extends mxShape.
+ */
+mxUtils.extend(mxShapeMockupGroup, mxShape);
+
+mxShapeMockupGroup.prototype.cst = {
+		MAIN_TEXT : 'mainText',
+		TEXT_SIZE : 'textSize',
+		TEXT_COLOR : 'textColor',
+		FILL_COLOR2 : 'fillColor2',
+		SHAPE_GROUP : 'mxgraph.mockup.containers.group'
+};
+
+/**
+ * Function: paintVertexShape
+ * 
+ * Paints the vertex shape.
+ */
+mxShapeMockupGroup.prototype.paintVertexShape = function(c, x, y, w, h)
+{
+	var groupString = mxUtils.getValue(this.style, mxShapeMockupGroup.prototype.cst.MAIN_TEXT, 'Group').toString();
+	var fontSize = mxUtils.getValue(this.style, mxShapeMockupGroup.prototype.cst.TEXT_SIZE, '17');
+
+	var textWidth = mxUtils.getSizeForString(groupString, fontSize, mxConstants.DEFAULT_FONTFAMILY).width;
+
+
+	c.translate(x, y);
+
+	w = Math.max(w, textWidth + 15);
+	h = Math.max(h, fontSize + 10);
+
+	this.background(c, w, h, textWidth, fontSize);
+	c.setShadow(false);
+	this.foreground(c, w, h, textWidth, fontSize);
+	this.buttonText(c, w, h, groupString, fontSize);
+};
+
+mxShapeMockupGroup.prototype.background = function(c, w, h, textWidth, fontSize)
+{
+	c.roundrect(0, fontSize * 0.5, w, h - fontSize * 0.5, 5, 5);
+	c.fillAndStroke();
+};
+
+mxShapeMockupGroup.prototype.foreground = function(c, w, h, textWidth, fontSize)
+{
+	var fillColor = mxUtils.getValue(this.style, mxShapeMockupGroup.prototype.cst.FILL_COLOR2, '#000000');
+	c.setFillColor(fillColor);
+	c.roundrect(3, 0, textWidth + 6, fontSize * 1.5, fontSize * 0.25, fontSize * 0.25);
+	c.fill();
+};
+
+mxShapeMockupGroup.prototype.buttonText = function(c, w, h, textString, fontSize)
+{
+	var fontColor = mxUtils.getValue(this.style, mxShapeMockupGroup.prototype.cst.TEXT_COLOR, '#ffffff');
+
+	c.setFontColor(fontColor);
+	c.setFontSize(fontSize);
+	c.text(6, 0, 0, 0, textString, mxConstants.ALIGN_LEFT, mxConstants.ALIGN_TOP, 0, null, 0, 0, 0);
+};
+
+mxCellRenderer.prototype.defaultShapes[mxShapeMockupGroup.prototype.cst.SHAPE_GROUP] = mxShapeMockupGroup;
+
+//**********************************************************************************************************************************************************
+//Window
+//**********************************************************************************************************************************************************
+/**
+ * Extends mxShape.
+ */
+function mxShapeMockupWindow(bounds, fill, stroke, strokewidth)
+{
+	mxShape.call(this);
+	this.bounds = bounds;
+	this.fill = fill;
+	this.stroke = stroke;
+	this.strokewidth = (strokewidth != null) ? strokewidth : 1;
+};
+
+/**
+ * Extends mxShape.
+ */
+mxUtils.extend(mxShapeMockupWindow, mxShape);
+
+mxShapeMockupWindow.prototype.cst = {
+		MAIN_TEXT : 'mainText',
+		TEXT_SIZE : 'textSize',
+		TEXT_COLOR : 'textColor',
+		STROKE_COLOR2 : 'strokeColor2',
+		STROKE_COLOR3 : 'strokeColor3',
+		SHAPE_WINDOW : 'mxgraph.mockup.containers.window'
+};
+
+/**
+ * Function: paintVertexShape
+ * 
+ * Paints the vertex shape.
+ */
+mxShapeMockupWindow.prototype.paintVertexShape = function(c, x, y, w, h)
+{
+	var bgColor = mxUtils.getValue(this.style, mxConstants.STYLE_FILLCOLOR, '#ffffff');
+	var frameColor = mxUtils.getValue(this.style, mxConstants.STYLE_STROKECOLOR, '#666666');
+	var closeColor = mxUtils.getValue(this.style, mxShapeMockupWindow.prototype.cst.STROKE_COLOR2, '#008cff');
+	var insideColor = mxUtils.getValue(this.style, mxShapeMockupWindow.prototype.cst.STROKE_COLOR3, '#c4c4c4');
+	c.translate(x, y);
+
+	h = Math.max(h, 30);
+	w = Math.max(w, 90);
+
+	this.background(c, x, y, w, h, bgColor, frameColor);
+	c.setShadow(false);
+	this.otherShapes(c, x, y, w, h, frameColor, insideColor, closeColor);
+};
+
+mxShapeMockupWindow.prototype.background = function(c, x, y, w, h, bgColor, frameColor)
+{
+	c.setFillColor(bgColor);
+	c.setStrokeColor(frameColor);
+	c.rect(0, 0, w, h);
+	c.fillAndStroke();
+};
+
+mxShapeMockupWindow.prototype.otherShapes = function(c, x, y, w, h, frameColor, insideColor, closeColor)
+{
+	var strokeWidth = mxUtils.getValue(this.style, mxConstants.STYLE_STROKEWIDTH, '1');
+
+	//window buttons
+	c.setStrokeColor(frameColor);
+	c.ellipse(w - 75, 5, 20, 20);
+	c.stroke();
+
+	c.ellipse(w - 50, 5, 20, 20);
+	c.stroke();
+
+	c.setStrokeColor(closeColor);
+	c.ellipse(w - 25, 5, 20, 20);
+	c.stroke();
+
+	c.setStrokeColor(insideColor);
+	//lines
+	c.begin();
+	c.moveTo(0, 30);
+	c.lineTo(w, 30);
+	c.stroke();
+
+	//text
+	var windowTitle = mxUtils.getValue(this.style, mxShapeMockupWindow.prototype.cst.MAIN_TEXT, 'Window Title');
+	var fontColor = mxUtils.getValue(this.style, mxShapeMockupWindow.prototype.cst.TEXT_COLOR, '#666666');
+	var fontSize = mxUtils.getValue(this.style, mxShapeMockupWindow.prototype.cst.TEXT_SIZE, '17').toString();
+
+	c.setFontColor(fontColor);
+	c.setFontSize(fontSize);
+	c.text(10, 15, 0, 0, windowTitle, mxConstants.ALIGN_LEFT, mxConstants.ALIGN_MIDDLE, 0, null, 0, 0, 0);
+	c.stroke();
+};
+
+mxCellRenderer.prototype.defaultShapes[mxShapeMockupWindow.prototype.cst.SHAPE_WINDOW] = mxShapeMockupWindow;
+
+//**********************************************************************************************************************************************************
+//Horizontal Tab Bar
+//**********************************************************************************************************************************************************
+/**
+ * Extends mxShape.
+ */
+function mxShapeMockupHorTabBar(bounds, fill, stroke, strokewidth)
+{
+	mxShape.call(this);
+	this.bounds = bounds;
+	this.fill = fill;
+	this.stroke = stroke;
+	this.strokewidth = (strokewidth != null) ? strokewidth : 1;
+};
+
+/**
+ * Extends mxShape.
+ */
+mxUtils.extend(mxShapeMockupHorTabBar, mxShape);
+
+mxShapeMockupHorTabBar.prototype.cst = {
+		BLOCK : 'block',
+		CONE : 'cone',
+		HALF_CONE : 'halfCone',
+		ROUND : 'round',
+		TEXT_SIZE : 'textSize',
+		TAB_NAMES : 'tabs',
+		TAB_STYLE : 'tabStyle',
+		STYLE_FILLCOLOR2 : 'fillColor2',
+		TEXT_COLOR : 'textColor',
+		SEL_TEXT_COLOR : 'textColor2',
+		SHAPE_HOR_TAB_BAR : 'mxgraph.mockup.containers.horTabBar'
+};
+
+/**
+ * Function: paintVertexShape
+ * 
+ * Paints the vertex shape.
+ */
+mxShapeMockupHorTabBar.prototype.paintVertexShape = function(c, x, y, w, h)
+{
+	var fontSize = mxUtils.getValue(this.style, mxShapeMockupHorTabBar.prototype.cst.TEXT_SIZE, '17').toString();
+	var tabNames = mxUtils.getValue(this.style, mxShapeMockupHorTabBar.prototype.cst.TAB_NAMES, 'Tab 1,+Tab 2,Tab 3').toString().split(',');
+
+	var tabH = fontSize * 1.5;
+	var startOffset = 10;
+	var tabOffset = 5;
+	var labelOffset = 10;
+	var tabCount = tabNames.length;
+	var minW = 2 * startOffset + (tabCount - 1) * tabOffset + tabCount * 2 * labelOffset;
+	var rSize = 5;
+	var labelWidths = new Array();
+	var selectedTab = -1;
+
+	for (var i = 0; i < tabCount; i++)
+	{
+		var currLabel = tabNames[i];
+
+		if(currLabel.charAt(0) === '+')
+		{
+			currLabel = currLabel.substring(1);
+			selectedTab = i;
+		}
+
+		labelWidths[i] = mxUtils.getSizeForString(currLabel, fontSize, mxConstants.DEFAULT_FONTFAMILY).width;
+		minW = minW + labelWidths[i];
+	}
+
+	w = Math.max(w, minW);
+	h = Math.max(h, tabH + rSize);
+
+	c.translate(x, y);
+
+	this.background(c, w, h, rSize, tabH);
+	c.setShadow(false);
+	this.backTabs(c, w, h, rSize, tabH, startOffset, tabOffset, labelOffset, tabCount, labelWidths, selectedTab);
+	this.focusTab(c, w, h, rSize, tabH, startOffset, tabOffset, labelOffset, tabCount, labelWidths, selectedTab);
+	this.tabText(c, w, h, rSize, tabH, startOffset, tabOffset, labelOffset, tabCount, labelWidths, selectedTab, tabNames);
+};
+
+mxShapeMockupHorTabBar.prototype.background = function(c, w, h, rSize, tabH)
+{
+	c.begin();
+	c.moveTo(0, tabH + rSize);
+	c.arcTo(rSize, rSize, 0, 0, 1, rSize, tabH);
+	c.lineTo(w - rSize, tabH);
+	c.arcTo(rSize, rSize, 0, 0, 1, w, tabH + rSize);
+	c.lineTo(w, h);
+	c.lineTo(0, h);
+	c.close();
+	c.fillAndStroke();
+};
+
+mxShapeMockupHorTabBar.prototype.backTabs = function(c, w, h, rSize, tabH, startOffset, tabOffset, labelOffset, tabCount, labelWidths, selectedTab)
+{
+	var tabStyle = mxUtils.getValue(this.style, mxShapeMockupHorTabBar.prototype.cst.TAB_STYLE, mxShapeMockupHorTabBar.prototype.cst.BLOCK);
+
+	var currW = startOffset;
+	for (var i=0; i < tabCount; i++)
+	{
+		var tabW = labelWidths[i] + 2 * labelOffset;
+
+		if (selectedTab !== i)
+		{
+			if (tabStyle === mxShapeMockupHorTabBar.prototype.cst.BLOCK)
+			{
+				c.rect(currW, 0, tabW, tabH);
+			}
+			else if (tabStyle === mxShapeMockupHorTabBar.prototype.cst.CONE)
+			{
+				c.begin();
+				c.moveTo(currW, tabH);
+				c.lineTo(currW + labelOffset * 0.5, 0);
+				c.lineTo(currW + tabW - labelOffset * 0.5, 0);
+				c.lineTo(currW + tabW, tabH);
+			}
+			else if (tabStyle === mxShapeMockupHorTabBar.prototype.cst.HALF_CONE)
+			{
+				c.begin();
+				c.moveTo(currW, tabH);
+				c.lineTo(currW + labelOffset * 0.5, 0);
+				c.lineTo(currW + tabW, 0);
+				c.lineTo(currW + tabW, tabH);
+			}
+			else if (tabStyle === mxShapeMockupHorTabBar.prototype.cst.ROUND)
+			{
+				c.begin();
+				c.moveTo(currW - rSize, tabH);
+				c.arcTo(rSize, rSize, 0, 0, 0, currW, tabH - rSize);
+				c.lineTo(currW, rSize);
+				c.arcTo(rSize, rSize, 0, 0, 1, currW + rSize, 0);
+				c.lineTo(currW + tabW - rSize, 0);
+				c.arcTo(rSize, rSize, 0, 0, 1, currW + tabW, rSize);
+				c.lineTo(currW + tabW, tabH - rSize);
+				c.arcTo(rSize, rSize, 0, 0, 0, currW + tabW + rSize, tabH);
+			}
+
+			c.fillAndStroke();
+		}
+
+		currW = currW + tabW + tabOffset;
+	}
+};
+
+mxShapeMockupHorTabBar.prototype.focusTab = function(c, w, h, rSize, tabH, startOffset, tabOffset, labelOffset, tabCount, labelWidths, selectedTab)
+{
+	var tabStyle = mxUtils.getValue(this.style, mxShapeMockupHorTabBar.prototype.cst.TAB_STYLE, mxShapeMockupHorTabBar.prototype.cst.BLOCK);
+	var selectedFill = mxUtils.getValue(this.style, mxShapeMockupHorTabBar.prototype.cst.STYLE_FILLCOLOR2, '#008cff');
+
+	var currW = startOffset;
+	c.setStrokeColor(selectedFill);
+	c.setFillColor(selectedFill);
+
+	for (var i=0; i <= selectedTab; i++)
+	{
+		var tabW = labelWidths[i] + 2 * labelOffset;
+
+		if (selectedTab === i)
+		{
+			if (tabStyle === mxShapeMockupHorTabBar.prototype.cst.BLOCK)
+			{
+				c.begin();
+				c.moveTo(0, tabH + rSize);
+				c.arcTo(rSize, rSize, 0, 0, 1, rSize, tabH);
+				c.lineTo(currW, tabH);
+				c.lineTo(currW, 0);
+				c.lineTo(currW + tabW, 0);
+				c.lineTo(currW + tabW, tabH);
+				c.lineTo(w - rSize, tabH);
+				c.arcTo(rSize, rSize, 0, 0, 1, w, tabH + rSize);
+				c.close();
+			}
+			else if (tabStyle === mxShapeMockupHorTabBar.prototype.cst.CONE)
+			{
+				c.begin();
+				c.moveTo(0, tabH + rSize);
+				c.arcTo(rSize, rSize, 0, 0, 1, rSize, tabH);
+				c.lineTo(currW, tabH);
+				c.lineTo(currW + labelOffset * 0.5, 0);
+				c.lineTo(currW + tabW - labelOffset * 0.5, 0);
+				c.lineTo(currW + tabW, tabH);
+				c.lineTo(w - rSize, tabH);
+				c.arcTo(rSize, rSize, 0, 0, 1, w, tabH + rSize);
+				c.close();
+			}
+			else if (tabStyle === mxShapeMockupHorTabBar.prototype.cst.HALF_CONE)
+			{
+				c.begin();
+				c.moveTo(0, tabH + rSize);
+				c.arcTo(rSize, rSize, 0, 0, 1, rSize, tabH);
+				c.lineTo(currW, tabH);
+				c.lineTo(currW + labelOffset * 0.5, 0);
+				c.lineTo(currW + tabW, 0);
+				c.lineTo(currW + tabW, tabH);
+				c.lineTo(w - rSize, tabH);
+				c.arcTo(rSize, rSize, 0, 0, 1, w, tabH + rSize);
+				c.close();
+			}
+			else if (tabStyle === mxShapeMockupHorTabBar.prototype.cst.ROUND)
+			{
+				c.begin();
+				c.moveTo(0, tabH + rSize);
+				c.arcTo(rSize, rSize, 0, 0, 1, rSize, tabH);
+				c.lineTo(currW - rSize, tabH);
+				c.arcTo(rSize, rSize, 0, 0, 0, currW, tabH - rSize);
+				c.lineTo(currW, rSize);
+				c.arcTo(rSize, rSize, 0, 0, 1, currW + rSize, 0);
+				c.lineTo(currW + tabW - rSize, 0);
+				c.arcTo(rSize, rSize, 0, 0, 1, currW + tabW, rSize);
+				c.lineTo(currW + tabW, tabH - rSize);
+				c.arcTo(rSize, rSize, 0, 0, 0, currW + tabW + rSize, tabH);
+				c.lineTo(w - rSize, tabH);
+				c.arcTo(rSize, rSize, 0, 0, 1, w, tabH + rSize);
+				c.close();
+			}
+
+			c.fillAndStroke();
+		}
+
+		currW = currW + tabW + tabOffset;
+	}
+};
+
+mxShapeMockupHorTabBar.prototype.tabText = function(c, w, h, rSize, tabH, startOffset, tabOffset, labelOffset, tabCount, labelWidths, selectedTab, tabNames)
+{
+	var fontColor = mxUtils.getValue(this.style, mxShapeMockupHorTabBar.prototype.cst.TEXT_COLOR, '#666666');
+	var selFontColor = mxUtils.getValue(this.style, mxShapeMockupHorTabBar.prototype.cst.SEL_TEXT_COLOR, '#ffffff');
+	var fontSize = mxUtils.getValue(this.style, mxShapeMockupHorTabBar.prototype.cst.TEXT_SIZE, '17').toString();
+
+	c.setFontColor(fontColor);
+	c.setFontSize(fontSize);
+
+	var currW = startOffset;
+
+	for (var i=0; i < tabCount; i++)
+	{
+		var currLabel = tabNames[i];
+
+		if (i === selectedTab)
+		{
+			c.setFontColor(selFontColor);
+		}
+
+		if (currLabel.charAt(0) === '+')
+		{
+			currLabel = currLabel.substring(1);
+		}
+
+		var tabW = labelWidths[i] + 2 * labelOffset;
+
+		c.text(currW + labelOffset, tabH * 0.5, 0, 0, currLabel, mxConstants.ALIGN_LEFT, mxConstants.ALIGN_MIDDLE, 0, null, 0, 0, 0);
+
+		currW = currW + tabW + tabOffset;
+
+		if (i === selectedTab)
+		{
+			c.setFontColor(fontColor);
+		}
+	}
+
+};
+
+mxCellRenderer.prototype.defaultShapes[mxShapeMockupHorTabBar.prototype.cst.SHAPE_HOR_TAB_BAR] = mxShapeMockupHorTabBar;
+
+//**********************************************************************************************************************************************************
+//Vertical Tab Bar
+//**********************************************************************************************************************************************************
+/**
+ * Extends mxShape.
+ */
+function mxShapeMockupVerTabBar(bounds, fill, stroke, strokewidth)
+{
+	mxShape.call(this);
+	this.bounds = bounds;
+	this.fill = fill;
+	this.stroke = stroke;
+	this.strokewidth = (strokewidth != null) ? strokewidth : 1;
+};
+
+/**
+ * Extends mxShape.
+ */
+mxUtils.extend(mxShapeMockupVerTabBar, mxShape);
+
+mxShapeMockupVerTabBar.prototype.cst = {
+		BLOCK : 'block',
+		ROUND : 'round',
+		TEXT_SIZE : 'textSize',
+		TAB_NAMES : 'tabs',
+		TAB_STYLE : 'tabStyle',
+		STYLE_FILLCOLOR2 : 'fillColor2',
+		TEXT_COLOR : 'textColor',
+		SEL_TEXT_COLOR : 'textColor2',
+		SHAPE_VER_TAB_BAR : 'mxgraph.mockup.containers.verTabBar'
+};
+
+/**
+ * Function: paintVertexShape
+ * 
+ * Paints the vertex shape.
+ */
+mxShapeMockupVerTabBar.prototype.paintVertexShape = function(c, x, y, w, h)
+{
+	var fontSize = mxUtils.getValue(this.style, mxShapeMockupVerTabBar.prototype.cst.TEXT_SIZE, '17').toString();
+	var tabNames = mxUtils.getValue(this.style, mxShapeMockupVerTabBar.prototype.cst.TAB_NAMES, 'Tab 1,+Tab 2,Tab 3').toString().split(',');
+
+	var tabH = fontSize * 1.5;
+	var startOffset = 10;
+	var tabOffset = 5;
+	var labelOffset = 10;
+	var tabCount = tabNames.length;
+	var rSize = 5;
+	var labelWidths = new Array();
+	var selectedTab = -1;
+	for (var i = 0; i < tabCount; i++)
+	{
+		var currLabel = tabNames[i];
+
+		if(currLabel.charAt(0) === '+')
+		{
+			currLabel = currLabel.substring(1);
+			selectedTab = i;
+		}
+
+		labelWidths[i] = mxUtils.getSizeForString(currLabel, fontSize, mxConstants.DEFAULT_FONTFAMILY).width;
+	}
+
+	var tabW = 2 * labelOffset + Math.max.apply(Math, labelWidths);
+	var minW = tabW + rSize;
+	w = Math.max(w, minW);
+	h = Math.max(h, 2 * startOffset + tabCount * tabH + (tabCount - 1) * tabOffset);
+
+	c.translate(x, y);
+
+	this.background(c, w, h, rSize, tabW);
+	c.setShadow(false);
+	this.backTabs(c, w, h, rSize, tabH, tabW, startOffset, tabOffset, labelOffset, tabCount, labelWidths, selectedTab);
+	this.focusTab(c, w, h, rSize, tabH, tabW, startOffset, tabOffset, labelOffset, tabCount, labelWidths, selectedTab);
+	this.tabText(c, w, h, rSize, tabH, tabW, startOffset, tabOffset, labelOffset, tabCount, labelWidths, selectedTab, tabNames);
+};
+
+mxShapeMockupVerTabBar.prototype.background = function(c, w, h, rSize, tabW)
+{
+	c.begin();
+	c.moveTo(tabW + rSize, h);
+	c.arcTo(rSize, rSize, 0, 0, 1, tabW, h - rSize);
+	c.lineTo(tabW, rSize);
+	c.arcTo(rSize, rSize, 0, 0, 1, tabW + rSize, 0);
+	c.lineTo(w, 0);
+	c.lineTo(w, h);
+	c.close();
+	c.fillAndStroke();
+};
+
+mxShapeMockupVerTabBar.prototype.backTabs = function(c, w, h, rSize, tabH, tabW, startOffset, tabOffset, labelOffset, tabCount, labelWidths, selectedTab)
+{
+	var tabStyle = mxUtils.getValue(this.style, mxShapeMockupVerTabBar.prototype.cst.TAB_STYLE, mxShapeMockupVerTabBar.prototype.cst.BLOCK);
+
+	var currH = startOffset;
+
+	for (var i=0; i < tabCount; i++)
+	{
+		if (selectedTab !== i)
+		{
+			if (tabStyle === mxShapeMockupVerTabBar.prototype.cst.BLOCK)
+			{
+				c.rect(0, currH, tabW, tabH);
+			}
+			else if (tabStyle === mxShapeMockupVerTabBar.prototype.cst.ROUND)
+			{
+				c.begin();
+				c.moveTo(tabW, currH + tabH + rSize);
+				c.arcTo(rSize, rSize, 0, 0, 0, tabW - rSize, currH + tabH);
+				c.lineTo(rSize, currH + tabH);
+				c.arcTo(rSize, rSize, 0, 0, 1, 0, currH + tabH - rSize);
+				c.lineTo(0, currH + rSize);
+				c.arcTo(rSize, rSize, 0, 0, 1, rSize, currH);
+				c.lineTo(tabW - rSize, currH);
+				c.arcTo(rSize, rSize, 0, 0, 0, tabW, currH - rSize);
+			}
+
+			c.fillAndStroke();
+		}
+
+		currH = currH + tabH + tabOffset;
+	}
+};
+
+mxShapeMockupVerTabBar.prototype.focusTab = function(c, w, h, rSize, tabH, tabW, startOffset, tabOffset, labelOffset, tabCount, labelWidths, selectedTab)
+{
+	var tabStyle = mxUtils.getValue(this.style, mxShapeMockupVerTabBar.prototype.cst.TAB_STYLE, mxShapeMockupVerTabBar.prototype.cst.BLOCK);
+	var selectedFill = mxUtils.getValue(this.style, mxShapeMockupVerTabBar.prototype.cst.STYLE_FILLCOLOR2, '#008cff');
+
+	if (selectedTab !== -1)
+	{
+
+		var currH = startOffset + (tabH  + tabOffset) * selectedTab;
+		c.setStrokeColor(selectedFill);
+		c.setFillColor(selectedFill);
+
+		if (tabStyle === mxShapeMockupVerTabBar.prototype.cst.BLOCK)
+		{
+			c.begin();
+			c.moveTo(tabW + rSize, h);
+			c.arcTo(rSize, rSize, 0, 0, 1, tabW, h - rSize);
+			c.lineTo(tabW, currH + tabH);
+			c.lineTo(0, currH + tabH);
+			c.lineTo(0, currH);
+			c.lineTo(tabW, currH);
+			c.lineTo(tabW, rSize);
+			c.arcTo(rSize, rSize, 0, 0, 1, tabW + rSize, 0);
+			c.close();
+		}
+		else if (tabStyle === mxShapeMockupVerTabBar.prototype.cst.ROUND)
+		{
+			c.begin();
+			c.moveTo(tabW + rSize, h);
+			c.arcTo(rSize, rSize, 0, 0, 1, tabW, h - rSize);
+			c.lineTo(tabW, currH + tabH + rSize);
+			c.arcTo(rSize, rSize, 0, 0, 0, tabW - rSize, currH + tabH);
+			c.lineTo(rSize, currH + tabH);
+			c.arcTo(rSize, rSize, 0, 0, 1, 0, currH + tabH - rSize);
+			c.lineTo(0, currH + rSize);
+			c.arcTo(rSize, rSize, 0, 0, 1, rSize, currH);
+			c.lineTo(tabW - rSize, currH);
+			c.arcTo(rSize, rSize, 0, 0, 0, tabW, currH - rSize);
+			c.lineTo(tabW, rSize);
+			c.arcTo(rSize, rSize, 0, 0, 1, tabW + rSize, 0);
+			c.close();
+		}
+
+		c.fillAndStroke();
+	}
+
+};
+
+mxShapeMockupVerTabBar.prototype.tabText = function(c, w, h, rSize, tabH, tabW, startOffset, tabOffset, labelOffset, tabCount, labelWidths, selectedTab, tabNames)
+{
+	var fontColor = mxUtils.getValue(this.style, mxShapeMockupVerTabBar.prototype.cst.TEXT_COLOR, '#666666');
+	var selFontColor = mxUtils.getValue(this.style, mxShapeMockupVerTabBar.prototype.cst.SEL_TEXT_COLOR, '#ffffff');
+	var fontSize = mxUtils.getValue(this.style, mxShapeMockupVerTabBar.prototype.cst.TEXT_SIZE, '17').toString();
+
+	c.setFontColor(fontColor);
+	c.setFontSize(fontSize);
+
+	var currH = startOffset;
+
+	for (var i=0; i < tabCount; i++)
+	{
+		var currLabel = tabNames[i];
+
+		if (i === selectedTab)
+		{
+			c.setFontColor(selFontColor);
+		}
+
+		if (currLabel.charAt(0) === '+')
+		{
+			currLabel = currLabel.substring(1);
+		}
+
+		c.text(tabW * 0.5, currH + tabH * 0.5, 0, 0, currLabel, mxConstants.ALIGN_CENTER, mxConstants.ALIGN_MIDDLE, 0, null, 0, 0, 0);
+
+		currH = currH + tabH + tabOffset;
+
+		if (i === selectedTab)
+		{
+			c.setFontColor(fontColor);
+		}
+	}
+
+};
+
+mxCellRenderer.prototype.defaultShapes[mxShapeMockupVerTabBar.prototype.cst.SHAPE_VER_TAB_BAR] = mxShapeMockupVerTabBar;
+
+//**********************************************************************************************************************************************************
+//Alert Box
+//**********************************************************************************************************************************************************
+/**
+ * Extends mxShape.
+ */
+function mxShapeMockupAlertBox(bounds, fill, stroke, strokewidth)
+{
+	mxShape.call(this);
+	this.bounds = bounds;
+	this.fill = fill;
+	this.stroke = stroke;
+	this.strokewidth = (strokewidth != null) ? strokewidth : 1;
+};
+
+/**
+ * Extends mxShape.
+ */
+mxUtils.extend(mxShapeMockupAlertBox, mxShape);
+
+mxShapeMockupAlertBox.prototype.cst = {
+		MAIN_TEXT : 'mainText',
+		SUB_TEXT : 'subText',
+		BUTTON_TEXT : 'buttonText',
+		TEXT_SIZE : 'textSize',
+		TEXT_COLOR : 'textColor',
+		STROKE_COLOR2 : 'strokeColor2',
+		STROKE_COLOR3 : 'strokeColor3',
+		SHAPE_ALERT_BOX : 'mxgraph.mockup.containers.alertBox'
+};
+
+/**
+ * Function: paintVertexShape
+ * 
+ * Paints the vertex shape.
+ */
+mxShapeMockupAlertBox.prototype.paintVertexShape = function(c, x, y, w, h)
+{
+	var bgColor = mxUtils.getValue(this.style, mxConstants.STYLE_FILLCOLOR, '#ffffff');
+	var frameColor = mxUtils.getValue(this.style, mxConstants.STYLE_STROKECOLOR, '#666666');
+	var closeColor = mxUtils.getValue(this.style, mxShapeMockupAlertBox.prototype.cst.STROKE_COLOR2, '#008cff');
+	var insideColor = mxUtils.getValue(this.style, mxShapeMockupAlertBox.prototype.cst.STROKE_COLOR3, '#c4c4c4');
+	c.translate(x, y);
+
+	h = Math.max(h, 75);
+	w = Math.max(w, 90);
+
+	this.background(c, x, y, w, h, bgColor, frameColor);
+	c.setShadow(false);
+	this.foreground(c, x, y, w, h, frameColor, insideColor, closeColor);
+};
+
+mxShapeMockupAlertBox.prototype.background = function(c, x, y, w, h, bgColor, frameColor)
+{
+	c.setFillColor(bgColor);
+	c.setStrokeColor(frameColor);
+	c.rect(0, 0, w, h);
+	c.fillAndStroke();
+};
+
+mxShapeMockupAlertBox.prototype.foreground = function(c, x, y, w, h, frameColor, insideColor, closeColor)
+{
+	var strokeWidth = mxUtils.getValue(this.style, mxConstants.STYLE_STROKEWIDTH, '1');
+
+	c.setStrokeColor(closeColor);
+	c.ellipse(w - 25, 5, 20, 20);
+	c.stroke();
+
+	c.setStrokeColor(insideColor);
+	c.begin();
+	c.moveTo(0, 30);
+	c.lineTo(w, 30);
+	c.stroke();
+
+	//buttons
+	var windowTitle = mxUtils.getValue(this.style, mxShapeMockupAlertBox.prototype.cst.MAIN_TEXT, 'Window Title').toString();
+	var subText = mxUtils.getValue(this.style, mxShapeMockupAlertBox.prototype.cst.SUB_TEXT, 'Sub Text').toString().split(',');
+	var buttonText = mxUtils.getValue(this.style, mxShapeMockupAlertBox.prototype.cst.BUTTON_TEXT, 'OK,blah,blah').toString().split(',');
+	var fontColor = mxUtils.getValue(this.style, mxShapeMockupAlertBox.prototype.cst.TEXT_COLOR, '#666666');
+	var fontSize = mxUtils.getValue(this.style, mxShapeMockupAlertBox.prototype.cst.TEXT_SIZE, '17').toString();
+
+	var buttonCount = buttonText.length;
+	var buttonOffset = 10;
+	var buttonW = (w - buttonOffset * (buttonCount + 1)) / buttonCount;
+		
+	c.setFontColor(fontColor);
+	c.setFontSize(fontSize);
+	c.text(10, 15, 0, 0, windowTitle, mxConstants.ALIGN_LEFT, mxConstants.ALIGN_MIDDLE, 0, null, 0, 0, 0);
+
+	var currW = buttonOffset;
+	
+	for (var i = 0; i < buttonText.length; i++)
+	{
+		c.rect(currW, h - 10 - fontSize * 1.5, buttonW, fontSize * 1.5);
+		c.stroke();
+		c.text(currW + buttonW * 0.5, h - 10 - fontSize * 0.75, 0, 0, buttonText[i], mxConstants.ALIGN_CENTER, mxConstants.ALIGN_MIDDLE, 0, null, 0, 0, 0);
+		
+		currW = currW + buttonW + buttonOffset;
+	}
+
+
+	for (var i = 0; i < subText.length; i++)
+	{
+		c.text(w * 0.5, 30 + fontSize * (i * 1.5 + 0.75), 0, 0, subText[i], mxConstants.ALIGN_CENTER, mxConstants.ALIGN_MIDDLE, 0, null, 0, 0, 0);
+	}
+
+	c.stroke();
+};
+
+mxCellRenderer.prototype.defaultShapes[mxShapeMockupAlertBox.prototype.cst.SHAPE_ALERT_BOX] = mxShapeMockupAlertBox;

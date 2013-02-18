@@ -1,8 +1,21 @@
-05-FEB-2012: 2.1.0.1
+16-FEB-2013: 2.1.1.1
+
+- Uses latest mxGraph
+
+08-FEB-2013: 2.1.1.0
+
+- Added iOS and ER stencils
+
+06-FEB-2013: 2.1.0.2
+
+- Patch for IE 9 Google Drive communications
+- Added Cisco stencils
+
+05-FEB-2013: 2.1.0.1
 
 - Fixes 7 second repeating Google auth dialog bug
 
-04-FEB-2012: 2.1.0.0
+04-FEB-2013: 2.1.0.0
 
 - Removes old sharing
 - Fixes relative images in embedded diagrams

@@ -524,6 +524,7 @@
 <constraint x="0.86" y="1" perimeter="0" name="SE"/>
 </connections>
 <foreground>
+<miterlimit limit="4"/>
 <path>
 <move x="25.84" y="94.05"/>
 <curve x1="25.82" y1="96.56" x2="27.82" y2="98.61" x3="30.3" y3="98.63"/>

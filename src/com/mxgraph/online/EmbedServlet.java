@@ -1,5 +1,5 @@
 /**
- * $Id: EmbedServlet.java,v 1.11 2013-02-04 09:40:15 gaudenz Exp $
+ * $Id: EmbedServlet.java,v 1.12 2013-02-08 17:23:48 david Exp $
  * Copyright (c) 2011-2012, JGraph Ltd
  * 
  * TODO
@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.net.URLDecoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -106,6 +105,8 @@ public class EmbedServlet extends HttpServlet
 	public void initLibraries()
 	{
 		libraries.put("bpmn", new String[]{"/shapes/bpmn/mxBpmnShape2.js", "/stencils/bpmn.xml"});
+		libraries.put("er", new String[]{"/shapes/er/mxER.js"});
+		libraries.put("ios", new String[]{"/shapes/mockup/mxMockupiOS.js"});
 	}
 
 	/**

@@ -1,5 +1,5 @@
 /**
- * $Id: mxMockupButtons.js,v 1.1 2013-01-16 16:06:57 gaudenz Exp $
+ * $Id: mxMockupButtons.js,v 1.4 2013-02-11 15:19:21 mate Exp $
  * Copyright (c) 2006-2010, JGraph Ltd
  */
 
@@ -9,7 +9,7 @@
 /**
  * Extends mxShape.
  */
-function mxShapeMockupMultilineButton(bounds, fill, stroke, strokewidth)
+function mxShapeMockupMultiButton(bounds, fill, stroke, strokewidth)
 {
 	mxShape.call(this);
 	this.bounds = bounds;
@@ -21,33 +21,45 @@ function mxShapeMockupMultilineButton(bounds, fill, stroke, strokewidth)
 /**
  * Extends mxShape.
  */
-mxUtils.extend(mxShapeMockupMultilineButton, mxShape);
+mxUtils.extend(mxShapeMockupMultiButton, mxShape);
+
+mxShapeMockupMultiButton.prototype.cst = {
+		MAIN_TEXT : 'mainText',
+		SHAPE_MULTILINE_BUTTON : 'mxgraph.mockup.buttons.multiButton',
+		SUB_TEXT : 'subText',
+		TEXT_COLOR : 'textColor',
+		TEXT_SIZE : 'textSize',
+		BUTTON_STYLE : 'buttonStyle',
+		ROUND : 'round',
+		CHEVRON : 'chevron'
+};
 
 /**
  * Function: paintVertexShape
  * 
  * Paints the vertex shape.
  */
-mxShapeMockupMultilineButton.prototype.paintVertexShape = function(c, x, y, w, h)
+mxShapeMockupMultiButton.prototype.paintVertexShape = function(c, x, y, w, h)
 {
-	var mainText = mxUtils.getValue(this.style, mxMockupC.BUTTON_TEXT, 'Main Text');
-	var subText = mxUtils.getValue(this.style, mxMockupC.SUB_TEXT, 'Sub Text');
-	var fontColor = mxUtils.getValue(this.style, mxMockupC.STYLE_TEXTCOLOR, '#666666');
-	var fontSize = mxUtils.getValue(this.style, mxConstants.STYLE_FONTSIZE, '17');
+	var mainText = mxUtils.getValue(this.style, mxShapeMockupMultiButton.prototype.cst.MAIN_TEXT, 'Main Text');
+	var subText = mxUtils.getValue(this.style, mxShapeMockupMultiButton.prototype.cst.SUB_TEXT, 'Sub Text');
+	var fontColor = mxUtils.getValue(this.style, mxShapeMockupMultiButton.prototype.cst.TEXT_COLOR, '#666666');
+	var fontSize = mxUtils.getValue(this.style, mxShapeMockupMultiButton.prototype.cst.TEXT_SIZE, '17');
 	c.translate(x, y);
 	this.background(c, x, y, w, h);
 	c.setShadow(false);
+	c.setFontStyle(mxConstants.FONT_BOLD);
 	this.mainText(c, x, y, w, h, mainText, fontSize, fontColor);
 	this.subText(c, x, y, w, h, subText, fontSize / 1.4, fontColor);
 };
 
-mxShapeMockupMultilineButton.prototype.background = function(c, x, y, w, h)
+mxShapeMockupMultiButton.prototype.background = function(c, x, y, w, h)
 {
-	var buttonStyle = mxUtils.getValue(this.style, mxMockupC.BUTTON_STYLE, mxMockupC.ROUND).toString();
+	var buttonStyle = mxUtils.getValue(this.style, mxShapeMockupMultiButton.prototype.cst.BUTTON_STYLE, mxShapeMockupMultiButton.prototype.cst.ROUND).toString();
 	var rSize = 10;
 	c.begin();
 
-	if (buttonStyle === mxMockupC.ROUND)
+	if (buttonStyle === mxShapeMockupMultiButton.prototype.cst.ROUND)
 	{
 		c.moveTo(0, rSize);
 		c.arcTo(rSize, rSize, 0, 0, 1, rSize, 0);
@@ -58,7 +70,7 @@ mxShapeMockupMultilineButton.prototype.background = function(c, x, y, w, h)
 		c.lineTo(rSize, h);
 		c.arcTo(rSize, rSize, 0, 0, 1, 0, h - rSize);
 	}
-	else if (buttonStyle === mxMockupC.CHEVRON)
+	else if (buttonStyle === mxShapeMockupMultiButton.prototype.cst.CHEVRON)
 	{
 		c.moveTo(0, h * 0.1);
 		c.arcTo(w * 0.0372, h * 0.1111, 0, 0, 1, w * 0.0334, 0);
@@ -76,7 +88,7 @@ mxShapeMockupMultilineButton.prototype.background = function(c, x, y, w, h)
 	c.fillAndStroke();
 };
 
-mxShapeMockupMultilineButton.prototype.mainText = function(c, x, y, w, h, text, fontSize, fontColor)
+mxShapeMockupMultiButton.prototype.mainText = function(c, x, y, w, h, text, fontSize, fontColor)
 {
 	c.begin();
 	c.setFontSize(fontSize);
@@ -84,14 +96,14 @@ mxShapeMockupMultilineButton.prototype.mainText = function(c, x, y, w, h, text, 
 	c.text(w * 0.5, h * 0.4, 0, 0, text, mxConstants.ALIGN_CENTER, mxConstants.ALIGN_MIDDLE, 0, null, 0, 0, 0);
 };
 
-mxShapeMockupMultilineButton.prototype.subText = function(c, x, y, w, h, text, fontSize, fontColor)
+mxShapeMockupMultiButton.prototype.subText = function(c, x, y, w, h, text, fontSize, fontColor)
 {
 	c.begin();
 	c.setFontSize(fontSize);
 	c.text(w * 0.5, h * 0.7, 0, 0, text, mxConstants.ALIGN_CENTER, mxConstants.ALIGN_MIDDLE, 0, null, 0, 0, 0);
 };
 
-mxCellRenderer.prototype.defaultShapes[mxMockupC.SHAPE_MULTILINE_BUTTON] = mxShapeMockupMultilineButton;
+mxCellRenderer.prototype.defaultShapes[mxShapeMockupMultiButton.prototype.cst.SHAPE_MULTILINE_BUTTON] = mxShapeMockupMultiButton;
 
 //**********************************************************************************************************************************************************
 //Button
@@ -113,6 +125,16 @@ function mxShapeMockupButton(bounds, fill, stroke, strokewidth)
  */
 mxUtils.extend(mxShapeMockupButton, mxShape);
 
+mxShapeMockupButton.prototype.cst = {
+		MAIN_TEXT : 'mainText',
+		SHAPE_BUTTON : 'mxgraph.mockup.buttons.button',
+		TEXT_COLOR : 'textColor',
+		TEXT_SIZE : 'textSize',
+		BUTTON_STYLE : 'buttonStyle',
+		ROUND : 'round',
+		CHEVRON : 'chevron'
+};
+
 /**
  * Function: paintVertexShape
  * 
@@ -120,9 +142,9 @@ mxUtils.extend(mxShapeMockupButton, mxShape);
  */
 mxShapeMockupButton.prototype.paintVertexShape = function(c, x, y, w, h)
 {
-	var mainText = mxUtils.getValue(this.style, mxMockupC.BUTTON_TEXT, 'Main Text');
-	var fontColor = mxUtils.getValue(this.style, mxMockupC.STYLE_TEXTCOLOR, '#666666').toString();
-	var fontSize = mxUtils.getValue(this.style, mxConstants.STYLE_FONTSIZE, '17').toString();
+	var mainText = mxUtils.getValue(this.style, mxShapeMockupButton.prototype.cst.MAIN_TEXT, 'Main Text');
+	var fontColor = mxUtils.getValue(this.style, mxShapeMockupButton.prototype.cst.TEXT_COLOR, '#666666').toString();
+	var fontSize = mxUtils.getValue(this.style, mxShapeMockupButton.prototype.cst.TEXT_SIZE, '17').toString();
 	c.translate(x, y);
 	this.background(c, x, y, w, h);
 	c.setShadow(false);
@@ -131,11 +153,11 @@ mxShapeMockupButton.prototype.paintVertexShape = function(c, x, y, w, h)
 
 mxShapeMockupButton.prototype.background = function(c, x, y, w, h)
 {
-	var buttonStyle = mxUtils.getValue(this.style, mxMockupC.BUTTON_STYLE, mxMockupC.ROUND).toString();
+	var buttonStyle = mxUtils.getValue(this.style, mxShapeMockupButton.prototype.cst.BUTTON_STYLE, mxShapeMockupButton.prototype.cst.ROUND).toString();
 	var rSize = 10;
 	c.begin();
 
-	if (buttonStyle === mxMockupC.ROUND)
+	if (buttonStyle === mxShapeMockupButton.prototype.cst.ROUND)
 	{
 		c.moveTo(0, rSize);
 		c.arcTo(rSize, rSize, 0, 0, 1, rSize, 0);
@@ -146,7 +168,7 @@ mxShapeMockupButton.prototype.background = function(c, x, y, w, h)
 		c.lineTo(rSize, h);
 		c.arcTo(rSize, rSize, 0, 0, 1, 0, h - rSize);
 	}
-	else if (buttonStyle === mxMockupC.CHEVRON)
+	else if (buttonStyle === mxShapeMockupButton.prototype.cst.CHEVRON)
 	{
 		c.moveTo(0, h * 0.1);
 		c.arcTo(w * 0.0372, h * 0.1111, 0, 0, 1, w * 0.0334, 0);
@@ -169,10 +191,11 @@ mxShapeMockupButton.prototype.mainText = function(c, x, y, w, h, text, fontSize,
 	c.begin();
 	c.setFontSize(fontSize);
 	c.setFontColor(fontColor);
+	c.setFontStyle(mxConstants.FONT_BOLD);
 	c.text(w / 2, h / 2, 0, 0, text, mxConstants.ALIGN_CENTER, mxConstants.ALIGN_MIDDLE, 0, null, 0, 0, 0);
 };
 
-mxCellRenderer.prototype.defaultShapes[mxMockupC.SHAPE_BUTTON] = mxShapeMockupButton;
+mxCellRenderer.prototype.defaultShapes[mxShapeMockupButton.prototype.cst.SHAPE_BUTTON] = mxShapeMockupButton;
 
 //**********************************************************************************************************************************************************
 //Horizontal Button Bar
@@ -194,6 +217,17 @@ function mxShapeMockupHorButtonBar(bounds, fill, stroke, strokewidth)
  */
 mxUtils.extend(mxShapeMockupHorButtonBar, mxShape);
 
+mxShapeMockupHorButtonBar.prototype.cst = {
+		MAIN_TEXT : 'mainText',
+		SHAPE_HOR_BUTTON_BAR : 'mxgraph.mockup.buttons.horButtonBar',
+		TEXT_COLOR : 'textColor',
+		TEXT_COLOR2 : 'textColor2',
+		STROKE_COLOR2 : 'strokeColor2',
+		FILL_COLOR2 : 'fillColor2',
+		SELECTED : '+',			//must be 1 char
+		TEXT_SIZE : 'textSize'
+};
+
 /**
  * Function: paintVertexShape
  * 
@@ -201,14 +235,14 @@ mxUtils.extend(mxShapeMockupHorButtonBar, mxShape);
  */
 mxShapeMockupHorButtonBar.prototype.paintVertexShape = function(c, x, y, w, h)
 {
-	var textStrings = mxUtils.getValue(this.style, mxMockupC.BUTTON_TEXT, '+Button 1, Button 2, Button 3').toString().split(',');
-	var fontColor = mxUtils.getValue(this.style, mxMockupC.STYLE_TEXTCOLOR, '#666666');
-	var selectedFontColor = mxUtils.getValue(this.style, mxMockupC.STYLE_TEXTCOLOR2, '#ffffff');
-	var fontSize = mxUtils.getValue(this.style, mxConstants.STYLE_FONTSIZE, '17').toString();
+	var textStrings = mxUtils.getValue(this.style, mxShapeMockupHorButtonBar.prototype.cst.MAIN_TEXT, '+Button 1, Button 2, Button 3').toString().split(',');
+	var fontColor = mxUtils.getValue(this.style, mxShapeMockupHorButtonBar.prototype.cst.TEXT_COLOR, '#666666');
+	var selectedFontColor = mxUtils.getValue(this.style, mxShapeMockupHorButtonBar.prototype.cst.TEXT_COLOR2, '#ffffff');
+	var fontSize = mxUtils.getValue(this.style, mxShapeMockupHorButtonBar.prototype.cst.TEXT_SIZE, '17').toString();
 	var frameColor = mxUtils.getValue(this.style, mxConstants.STYLE_STROKECOLOR, '#666666');
-	var separatorColor = mxUtils.getValue(this.style, mxMockupC.STYLE_STROKECOLOR2, '#c4c4c4');
+	var separatorColor = mxUtils.getValue(this.style, mxShapeMockupHorButtonBar.prototype.cst.STROKE_COLOR2, '#c4c4c4');
 	var bgColor = mxUtils.getValue(this.style, mxConstants.STYLE_FILLCOLOR, '#ffffff');
-	var selectedFillColor = mxUtils.getValue(this.style, mxMockupC.STYLE_FILLCOLOR2, '#008cff');
+	var selectedFillColor = mxUtils.getValue(this.style, mxShapeMockupHorButtonBar.prototype.cst.FILL_COLOR2, '#008cff');
 	var buttonNum = textStrings.length;
 	var buttonWidths = new Array(buttonNum);
 	var buttonTotalWidth = 0;
@@ -220,7 +254,7 @@ mxShapeMockupHorButtonBar.prototype.paintVertexShape = function(c, x, y, w, h)
 	{
 		var buttonText = textStrings[i];
 
-		if(buttonText.charAt(0) === mxMockupC.SELECTED)
+		if(buttonText.charAt(0) === mxShapeMockupHorButtonBar.prototype.cst.SELECTED)
 		{
 			buttonText = textStrings[i].substring(1);
 			selectedButton = i;
@@ -239,6 +273,7 @@ mxShapeMockupHorButtonBar.prototype.paintVertexShape = function(c, x, y, w, h)
 	this.background(c, trueW, trueH, rSize, buttonNum, buttonWidths, labelOffset, minW, frameColor, separatorColor, bgColor, selectedFillColor, selectedButton);
 	c.setShadow(false);
 
+	c.setFontStyle(mxConstants.FONT_BOLD);
 	var currWidth = 0;
 
 	for (var i = 0; i < buttonNum; i++)
@@ -300,7 +335,6 @@ mxShapeMockupHorButtonBar.prototype.background = function(c, w, h, rSize, button
 
 	//draw the selected button
 	var buttonLeft = 0;
-	c.setStrokeColor(mxConstants.NONE);
 	c.setFillColor(selectedFillColor);
 
 	for (var i = 0; i < selectedButton; i++)
@@ -368,7 +402,7 @@ mxShapeMockupHorButtonBar.prototype.background = function(c, w, h, rSize, button
 
 mxShapeMockupHorButtonBar.prototype.buttonText = function(c, w, h, textString, buttonWidth, fontSize, minW, trueW)
 {
-	if(textString.charAt(0) === mxMockupC.SELECTED)
+	if(textString.charAt(0) === mxShapeMockupHorButtonBar.prototype.cst.SELECTED)
 	{
 		textString = textString.substring(1);
 	}
@@ -378,7 +412,7 @@ mxShapeMockupHorButtonBar.prototype.buttonText = function(c, w, h, textString, b
 	c.text((w + buttonWidth * 0.5) * trueW / minW, h * 0.5, 0, 0, textString, mxConstants.ALIGN_CENTER, mxConstants.ALIGN_MIDDLE, 0, null, 0, 0, 0);
 };
 
-mxCellRenderer.prototype.defaultShapes[mxMockupC.SHAPE_HOR_BUTTON_BAR] = mxShapeMockupHorButtonBar;
+mxCellRenderer.prototype.defaultShapes[mxShapeMockupHorButtonBar.prototype.cst.SHAPE_HOR_BUTTON_BAR] = mxShapeMockupHorButtonBar;
 
 //**********************************************************************************************************************************************************
 //Vertical Button Bar
@@ -400,6 +434,17 @@ function mxShapeMockupVerButtonBar(bounds, fill, stroke, strokewidth)
  */
 mxUtils.extend(mxShapeMockupVerButtonBar, mxShape);
 
+mxShapeMockupVerButtonBar.prototype.cst = {
+		MAIN_TEXT : 'mainText',
+		SHAPE_VER_BUTTON_BAR : 'mxgraph.mockup.buttons.verButtonBar',
+		TEXT_COLOR : 'textColor',
+		TEXT_COLOR2 : 'textColor2',
+		STROKE_COLOR2 : 'strokeColor2',
+		FILL_COLOR2 : 'fillColor2',
+		SELECTED : '+',			//must be 1 char
+		TEXT_SIZE : 'textSize'
+};
+
 /**
  * Function: paintVertexShape
  * 
@@ -407,14 +452,14 @@ mxUtils.extend(mxShapeMockupVerButtonBar, mxShape);
  */
 mxShapeMockupVerButtonBar.prototype.paintVertexShape = function(c, x, y, w, h)
 {
-	var textStrings = mxUtils.getValue(this.style, mxMockupC.BUTTON_TEXT, '+Button 1, Button 2, Button 3').toString().split(',');
-	var fontColor = mxUtils.getValue(this.style, mxMockupC.STYLE_TEXTCOLOR, '#666666');
-	var selectedFontColor = mxUtils.getValue(this.style, mxMockupC.STYLE_TEXTCOLOR2, '#ffffff');
-	var fontSize = mxUtils.getValue(this.style, mxConstants.STYLE_FONTSIZE, '17').toString();
+	var textStrings = mxUtils.getValue(this.style, mxShapeMockupVerButtonBar.prototype.cst.MAIN_TEXT, '+Button 1, Button 2, Button 3').toString().split(',');
+	var fontColor = mxUtils.getValue(this.style, mxShapeMockupVerButtonBar.prototype.cst.TEXT_COLOR, '#666666');
+	var selectedFontColor = mxUtils.getValue(this.style, mxShapeMockupVerButtonBar.prototype.cst.TEXT_COLOR2, '#ffffff');
+	var fontSize = mxUtils.getValue(this.style, mxShapeMockupVerButtonBar.prototype.cst.TEXT_SIZE, '17').toString();
 	var frameColor = mxUtils.getValue(this.style, mxConstants.STYLE_STROKECOLOR, '#666666');
-	var separatorColor = mxUtils.getValue(this.style, mxMockupC.STYLE_STROKECOLOR2, '#c4c4c4');
+	var separatorColor = mxUtils.getValue(this.style, mxShapeMockupVerButtonBar.prototype.cst.STROKE_COLOR2, '#c4c4c4');
 	var bgColor = mxUtils.getValue(this.style, mxConstants.STYLE_FILLCOLOR, '#ffffff');
-	var selectedFillColor = mxUtils.getValue(this.style, mxMockupC.STYLE_FILLCOLOR2, '#008cff');
+	var selectedFillColor = mxUtils.getValue(this.style, mxShapeMockupVerButtonBar.prototype.cst.FILL_COLOR2, '#008cff');
 	var buttonNum = textStrings.length;
 	var maxButtonWidth = 0;
 	var selectedButton = -1;
@@ -425,7 +470,7 @@ mxShapeMockupVerButtonBar.prototype.paintVertexShape = function(c, x, y, w, h)
 	{
 		var buttonText = textStrings[i];
 
-		if(buttonText.charAt(0) === mxMockupC.SELECTED)
+		if(buttonText.charAt(0) === mxShapeMockupVerButtonBar.prototype.cst.SELECTED)
 		{
 			buttonText = textStrings[i].substring(1);
 			selectedButton = i;
@@ -451,6 +496,7 @@ mxShapeMockupVerButtonBar.prototype.paintVertexShape = function(c, x, y, w, h)
 	c.setShadow(false);
 
 	var currWidth = 0;
+	c.setFontStyle(mxConstants.FONT_BOLD);
 
 	for (var i = 0; i < buttonNum; i++)
 	{
@@ -505,7 +551,6 @@ mxShapeMockupVerButtonBar.prototype.background = function(c, w, h, rSize, button
 	c.stroke();
 
 	//draw the selected button
-	c.setStrokeColor(mxConstants.NONE);
 	c.setFillColor(selectedFillColor);
 
 	if (selectedButton === 0)
@@ -568,7 +613,7 @@ mxShapeMockupVerButtonBar.prototype.background = function(c, w, h, rSize, button
 
 mxShapeMockupVerButtonBar.prototype.buttonText = function(c, w, h, textString, fontSize)
 {
-	if(textString.charAt(0) === mxMockupC.SELECTED)
+	if(textString.charAt(0) === mxShapeMockupVerButtonBar.prototype.cst.SELECTED)
 	{
 		textString = textString.substring(1);
 	}
@@ -578,4 +623,4 @@ mxShapeMockupVerButtonBar.prototype.buttonText = function(c, w, h, textString, f
 	c.text((w * 0.5), h, 0, 0, textString, mxConstants.ALIGN_CENTER, mxConstants.ALIGN_MIDDLE, 0, null, 0, 0, 0);
 };
 
-mxCellRenderer.prototype.defaultShapes[mxMockupC.SHAPE_VER_BUTTON_BAR] = mxShapeMockupVerButtonBar;
+mxCellRenderer.prototype.defaultShapes[mxShapeMockupVerButtonBar.prototype.cst.SHAPE_VER_BUTTON_BAR] = mxShapeMockupVerButtonBar;

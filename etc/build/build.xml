@@ -7,7 +7,7 @@
 	<!-- ============ Merges and minimizes JavaScript code into one file =============== -->
 	
 	<target name="compile">
-		<jscomp compilationLevel="simple" debug="false" output="${basedir}/../../war/js/diagramly.min.js">
+		<jscomp compilationLevel="simple" debug="false" forceRecompile="true" output="${basedir}/../../war/js/diagramly.min.js">
 			<sources dir="${basedir}/../../etc/mxgraph">
 				<file name="mxClient.js" />
 			</sources>

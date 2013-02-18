@@ -1,5 +1,5 @@
 /*
- * $Id: Diagramly.js,v 1.56 2013-02-04 15:31:32 gaudenz Exp $
+ * $Id: Diagramly.js,v 1.64 2013-02-16 17:10:19 boris Exp $
  * Copyright (c) 2006-2010, JGraph Ltd
  */
 // For compatibility with open servlet on GAE
@@ -237,6 +237,10 @@ function setCurrentXml(data, filename)
 	         'Transistors', 'Waveforms'];
 	Sidebar.prototype.ee = ee;
 
+	var cisco = [ 'Buildings', 'Computers and Peripherals', 'Controllers and Modules', 'Directors', 'Hubs and Gateways', 'Misc', 
+	         'Modems and Phones', 'People', 'Routers', 'Security', 'Servers', 'Storage', 'Switches', 'Wireless'];
+	Sidebar.prototype.cisco = cisco;
+	
 	// Adds all PID stencils
 	var pids = ['Compressors', 'Heat Exchangers', 'Instruments', 'Pumps', 'Valves', 'Vessels'];
 	Sidebar.prototype.pids = pids;
@@ -275,6 +279,8 @@ function setCurrentXml(data, filename)
 			addItem(['general'], mxResources.get('general'));
 			addItem(['images'], mxResources.get('images'));
 			addItem(['uml'], 'UML');
+			addItem(['er'], 'Entity Relation');
+			addItem(['ios'], 'iOS');
 			addItem(['bpmn', 'bpmnGateways', 'bpmnEvents'], 'BPMN');
 			addItem(['flowchart'], 'Flowchart');
 			addItem(['basic'], mxResources.get('basic'));
@@ -288,6 +294,7 @@ function setCurrentXml(data, filename)
                      'OnDemandWorkforce', 'Storage'], 'AWS', 'aws');
 			addItem(pids, 'P&ID', 'pid');
 			addItem(['leanMapping'], 'Lean Mapping');
+			addItem(cisco, 'Cisco', 'cisco');
 		})));
 		
 		this.editorUi.actions.put('new', new Action(mxResources.get('blankDrawing'), mxUtils.bind(this, function()
@@ -353,17 +360,22 @@ function setCurrentXml(data, filename)
 		{
 			this.editorUi.showDialog(new ExportDialog(this.editorUi).container, 300, 220, true, true);
 		}), null, null, 'Ctrl+E');
-		/*this.editorUi.actions.addAction('share', mxUtils.bind(this, function()
-		{
-			this.editorUi.showDialog(new ShareDialog(this.editorUi).container, 340, 100, true, true);
-		}));*/
+		
 		this.editorUi.actions.put('about', new Action(mxResources.get('aboutDrawio'), mxUtils.bind(this, function()
 		{
 			this.editorUi.showDialog(new AboutDialog(this.editorUi).container, 300, 344, true, true);
 		}), null, null, 'F1'));
-		this.editorUi.actions.put('help', new Action('draw.io @ StackExchange', mxUtils.bind(this, function()
+		this.editorUi.actions.put('help', new Action('Support', mxUtils.bind(this, function()
+		{
+			window.open('http://support.draw.io');
+		})));
+		this.editorUi.actions.put('stackExchange', new Action('draw.io @ StackExchange', mxUtils.bind(this, function()
 		{
 			window.open('http://webapps.stackexchange.com/questions/tagged/draw.io');
+		})));
+		this.editorUi.actions.put('github', new Action('draw.io @ GitHub', mxUtils.bind(this, function()
+		{
+			window.open('https://github.com/jgraph/draw.io');
 		})));
 		this.editorUi.actions.addAction('image', function()
 		{
@@ -492,7 +504,7 @@ function setCurrentXml(data, filename)
 		
 		this.put('help', new Menu(mxUtils.bind(this, function(menu, parent)
 		{
-			this.addMenuItems(menu, ['help', '-', 'about']);
+			this.addMenuItems(menu, ['help', 'github', 'stackExchange', '-', 'about']);
 			
 			if (urlParams['test'] == '1')
 			{
@@ -528,7 +540,7 @@ function setCurrentXml(data, filename)
 					{
 						//console.log(this.editorUi.sharing);
 						mxLog.show();
-						mxLog.debug(this.editorUi.sharing.dump());
+						mxLog.debug(this.editorUi.sharing.dumpRoot());
 					}
 				}));
 				
@@ -573,7 +585,14 @@ function setCurrentXml(data, filename)
 		this.put('file', new Menu(mxUtils.bind(this, function(menu, parent)
 		{
 			this.addSubmenu('new', menu, parent);
-			this.addMenuItems(menu, ['open', '-', 'save', 'saveAs', '-', 'import', 'export', '-', 'embed', 'editFile', '-', 'pageSetup', 'print'], parent);
+			this.addMenuItems(menu, ['open', '-', 'save', 'saveAs', '-'], parent);
+
+			if (this.editorUi.actions.get('share') != null)
+			{
+				this.addMenuItems(menu, ['-', 'share', '-'], parent);
+			}
+
+			this.addMenuItems(menu, ['import', 'export', '-', 'embed', 'editFile', '-', 'pageSetup', 'print'], parent);
 		})));
 	};
 

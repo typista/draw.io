@@ -29,7 +29,7 @@ var mxGoogleDrive =
 	cookieName : 'drive',
 	cookieRegex : /\s?drive=.*/,
 	saveArgs : null,//arguments used when retrying save after token expiration recovery
-	authConfig : null ,//auth args are stored in case auth is automatically repeated
+	authConfig : null,//auth args are stored in case auth is automatically repeated
 	fileInfo :
 	{
 		'id' : null,
@@ -39,7 +39,8 @@ var mxGoogleDrive =
 		'description' : '',
 		'parents' : []
 	},
-	stateMachine : null,
+	stateMachine : null,//state machine object
+	sharing : null,//sharing dialog object
 	checkAuthorization : function(authConfig)
 	{
 		//mxLog.show();
@@ -55,7 +56,7 @@ var mxGoogleDrive =
 			userId = mxIntegration.userId;
 		}
 
-		var config = mxGoogleDrive.createAuthConfig(userId, false);		
+		var config = mxGoogleDrive.createAuthConfig(userId, false);
 		mxGoogleDrive.startIntegration(config);//disconnected -> authorizing
 	},
 	handleLoginRepeatAttempt : function(authConfig)
@@ -65,7 +66,7 @@ var mxGoogleDrive =
 			mxGoogleDrive.tryCount += 1;
 			mxIntegration.setMessage(mxResources.get('retryingLogin'));
 			mxLog.debug('handleLoginRepeatAttempt ' + mxGoogleDrive.tryCount);
-			mxGoogleDrive.checkAuthorization.apply(mxGoogleDrive,authConfig);
+			mxGoogleDrive.checkAuthorization.apply(mxGoogleDrive, [ authConfig ]);
 		} else
 		{
 			mxGoogleDrive.tryCount = 0;
@@ -207,7 +208,7 @@ var mxGoogleDrive =
 		mxGoogleDrive.stateMachine = new Stately(mxGoogleDrive.machineStatesObject);
 		mxGoogleDrive.stateMachine.bind(function notification(event, oldState, newState)
 		{
-			mxLog.debug(oldState, ' -> ' , newState, event != null ? 'on ' + event : '');
+			mxLog.debug(oldState, ' -> ', newState, event != null ? 'on ' + event : '');
 		});
 
 		mxGoogleDrive.stateMachine.connect(authConfig);
@@ -278,9 +279,9 @@ var mxGoogleDrive =
 				mxGoogleDrive.fileInfo = resp;
 				mxGoogleDrive.editorUi.editor.modified = false;
 				mxGoogleDrive.editorUi.editor.setStatus(mxResources.get('saved') + ' ' + new Date());
-				
+
 				mxGoogleDrive.stateMachine.ok();//saving -> ready
-				if(mxGoogleDrive.getFileID() == null || mxGoogleDrive.getFileID() != resp.id)//do we need to redirect to match the ID of the working file to fileID in URL?
+				if (mxGoogleDrive.getFileID() == null || mxGoogleDrive.getFileID() != resp.id)//do we need to redirect to match the ID of the working file to fileID in URL?
 				{
 					window.location.replace(mxGoogleDrive.editorUi.getUrl(window.location.pathname + '?fileId=' + resp.id));
 				}
@@ -290,16 +291,15 @@ var mxGoogleDrive =
 			} else if (resp.error.code == 403 && resp.error.errors[0].reason == "userAccess")
 			{
 				mxGoogleDrive.stateMachine.retryOnError(null, parents, fileName, content, tryCount);//if we're denied access to the opened file, save a new copy
-			} else if (resp.error.code == 404) 
+			} else if (resp.error.code == 404)
 			{
 				mxGoogleDrive.stateMachine.giveUpOnError(resp.error.code);
-			}
-			else
+			} else
 			{
 				if (tryCount < mxGoogleDrive.retryLimit)
 				{
 					mxGoogleDrive.stateMachine.retryOnError(fileId, parents, fileName, content, tryCount);
-					
+
 				} else
 				{
 					mxGoogleDrive.stateMachine.giveUpOnError();
@@ -314,16 +314,15 @@ var mxGoogleDrive =
 	loadFileMetaData : function(fileId, stateObject)
 	{
 		mxLog.debug('loadFileMetaData');
-		
+
 		if (mxIntegration.spinner == null)
 		{
 			mxIntegration.spinner = mxIntegration.createSpinner(this.editorUi.editor.graph.container);
 			mxGoogleDrive.editorUi.editor.setStatus(mxResources.get('loading') + '...');
-		} else 
+		} else
 		{
 			mxIntegration.spinner.spin(this.editorUi.editor.graph.container);
 		}
-		
 
 		var handleFileMetaDataLoad = function(resp)
 		{
@@ -362,40 +361,40 @@ var mxGoogleDrive =
 	},
 	loadFileContents : function(downloadUrl)
 	{
-		var onLoad = function(res)
-		{
-			if(res.request.status == 200) 
-			{
-				clearTimeout(mxGoogleDrive.loadTimeout);
-				
-				var responseText = res.getText ? res.getText() : res.responseText;
-				var doc = mxUtils.parseXml(responseText);
-				
-				mxGoogleDrive.editorUi.editor.setGraphXml(doc.documentElement);
-				
-				mxGoogleDrive.editorUi.editor.modified = false;
-				mxGoogleDrive.editorUi.editor.undoManager.clear();
-				mxGoogleDrive.editorUi.editor.filename = mxGoogleDrive.fileInfo.title;
-				mxGoogleDrive.editorUi.editor.setStatus('');
-				mxGoogleDrive.editorUi.editor.graph.container.focus();
-				
-				mxIntegration.spinner.stop();
-				mxGoogleDrive.tryCount = 0;
-				mxGoogleDrive.stateMachine.ok();//loading -> ready
-			}
-			else 
-			{
-				mxGoogleDrive.handleFileLoadError(res);
-			}
-			
-		};
-		var onError = function(resp)
+		var onError = function(res)// we cannot differentiate errors in IE9 in second stage of load procedure
 		{
 			mxLog.debug('loadFileContents error, try count  : ' + mxGoogleDrive.tryCount);
 			mxGoogleDrive.handleFileLoadError(res);
 		};
 
-		this.sendHttpRequest(downloadUrl, onLoad, onError);
+		this.sendHttpRequest(downloadUrl, this.handleFileContentsLoad/*onLoad*/, onError);
+	},
+	handleFileContentsLoad : function(res)
+	{
+		//we're OK if status is 200 in proper browsers or we got here in IE9
+		if ((res.constructor === mxXmlRequest && res.request.status == 200)
+				|| (window.XDomainRequest && res.constructor === XDomainRequest))
+		{
+			clearTimeout(mxGoogleDrive.loadTimeout);
+
+			var responseText = res.getText ? res.getText() : res.responseText;
+			var doc = mxUtils.parseXml(responseText);
+
+			mxGoogleDrive.editorUi.editor.setGraphXml(doc.documentElement);
+
+			mxGoogleDrive.editorUi.editor.modified = false;
+			mxGoogleDrive.editorUi.editor.undoManager.clear();
+			mxGoogleDrive.editorUi.editor.filename = mxGoogleDrive.fileInfo.title;
+			mxGoogleDrive.editorUi.editor.setStatus('');
+			mxGoogleDrive.editorUi.editor.graph.container.focus();
+
+			mxIntegration.spinner.stop();
+			mxGoogleDrive.tryCount = 0;
+			mxGoogleDrive.stateMachine.ok();//loading -> ready
+		} else
+		{
+			mxGoogleDrive.handleFileLoadError(res);
+		}
 	},
 	handleFileLoadError : function(resp)
 	{
@@ -463,7 +462,7 @@ var mxGoogleDrive =
 					// Invalid state ignored
 				}
 			}
-			
+
 			if (fileId != null)
 			{
 				mxGoogleDrive.stateMachine.load(fileId);
@@ -512,39 +511,39 @@ var mxGoogleDrive =
 
 		return stateObj;
 	},
-	createAuthConfig : function(userID, immediate) 
+	createAuthConfig : function(userID, immediate)
 	{
-		var obj = 
+		var obj =
 		{
 			client_id : mxGoogleDrive.clientID,
 			scope : mxGoogleDrive.scopes.join(' '),
 			immediate : immediate
 		};
-		
-		if(userID == null) 
+
+		if (userID == null)
 		{
 			obj.authuser = -1;
-		} else 
+		} else
 		{
 			obj.user_id = userID;
 		}
-		
+
 		return obj;
-		
+
 	},
-	getFileID : function() 
+	getFileID : function()
 	{
 		var fileID = null;
 		var stateObj = this.getStateObject();
-		
-		if(stateObj != null && stateObj.ids != null && stateObj.ids.length > 0) 
+
+		if (stateObj != null && stateObj.ids != null && stateObj.ids.length > 0)
 		{
 			fileID = stateObj.ids[0];
-		} else if(urlParams['fileId'] != null) 
+		} else if (urlParams['fileId'] != null)
 		{
 			fileID = urlParams['fileId'];
 		}
-		
+
 		return fileID;
 	},
 	machineStatesObject :
@@ -553,26 +552,25 @@ var mxGoogleDrive =
 		{
 			connect : function(authConfig)
 			{
-				if(authConfig == null) 
+				if (authConfig == null)
 				{
 					var state = urlParams['state'];
 					var userID = null;
-					
+
 					if (state != null)
 					{
 						var stateObj = JSON.parse(decodeURIComponent(state));
 						userID = stateObj.userId;
 					}
-					
+
 					if (userID == null)
 					{
 						userID = mxGoogleDrive.getUserIDFromCookie(mxGoogleDrive.getCookie());
 					}
-					
+
 					authConfig = mxGoogleDrive.createAuthConfig(userID, true);
 					mxGoogleDrive.checkAuthorization(authConfig);
-				}
-				else 
+				} else
 				{
 					mxGoogleDrive.checkAuthorization(authConfig);
 				}
@@ -587,7 +585,7 @@ var mxGoogleDrive =
 			},
 			timeout : function()
 			{
-				mxGoogleDrive.handleLoginRepeatAttempt(mxGoogleDrive.authConfig);
+				mxGoogleDrive.handleLoginRepeatAttempt(mxGoogleDrive.createAuthConfig(mxIntegration.userID, true));
 			}
 		},
 		'postAuth' :
@@ -601,19 +599,21 @@ var mxGoogleDrive =
 		{
 			save : function(fileId, parents, name, xml)
 			{
-				mxGoogleDrive.saveOrUpdateFile(fileId, parents, name, xml,0, this);
+				mxGoogleDrive.saveOrUpdateFile(fileId, parents, name, xml, 0, this);
 			},
 			load : function(fileId)
 			{
 				mxGoogleDrive.loadFileMetaData(fileId, this);
 				return this.loading;
 			},
-			disconnect : function() 
+			disconnect : function()
 			{
 				mxGoogleDrive.editorUi.actions.put('open', mxGoogleDrive.openAction);
 				mxIntegration.setLoggedIn(false);
 				mxIntegration.showUserControls(false);
 				mxGoogleDrive.editorUi.showDialog(new LogoutPopup(mxGoogleDrive.editorUi).container, 320, 80, true, true);
+				
+				mxGoogleDrive.editorUi.actions.put('share', null);
 
 				return this.disconnected;
 			}
@@ -624,7 +624,7 @@ var mxGoogleDrive =
 			{
 				return this.ready;
 			},
-			unauthorized : function(args) 
+			unauthorized : function(args)
 			{
 				var stateObject = this;
 				var dialog = new SessionTimeoutDialog(mxGoogleDrive.editorUi);
@@ -635,7 +635,7 @@ var mxGoogleDrive =
 					stateObject.setMachineState(stateObject.reauthorizing);
 					//mxGoogleDrive.authConfig.immediate = false;// force 'immediate' to false in case of 401
 					var authConfig = mxGoogleDrive.createAuthConfig(mxIntegration.userId, false);
-					mxGoogleDrive.checkAuthorization.apply(mxGoogleDrive, [authConfig]);
+					mxGoogleDrive.checkAuthorization.apply(mxGoogleDrive, [ authConfig ]);
 					mxGoogleDrive.editorUi.hideDialog();
 				}));
 
@@ -648,29 +648,29 @@ var mxGoogleDrive =
 
 				mxGoogleDrive.editorUi.showDialog(dialog.container, 370, 70, true, true);
 			},
-			retryOnError : function(fileId, parents, fileName, content, tryCount) 
+			retryOnError : function(fileId, parents, fileName, content, tryCount)
 			{
 				var stateObject = this;
-				var retryInterval = Math.pow(2, tryCount) * 1000 + Math.random() * 1000;
+				var retryInterval = Math.pow(2, tryCount) * 1000;
 
 				mxGoogleDrive.editorUi.editor.setStatus(mxResources.get('errorSavingFile') + '. '
 						+ mxResources.get('retryingIn', [ retryInterval / 1000 ]));
 				mxGoogleDrive.timeoutId = setTimeout(function()
 				{
 					mxGoogleDrive.saveOrUpdateFile(fileId, parents, fileName, content, tryCount + 1, stateObject);
-				}, retryInterval);
+				}, retryInterval + Math.random() * 1000);
 			},
-			giveUpOnError : function(errorCode) 
+			giveUpOnError : function(errorCode)
 			{
-				if(errorCode == null) 
+				if (errorCode == null)
 				{
 					mxGoogleDrive.editorUi.editor.setStatus(mxResources.get('errorSavingFile'));
 					mxUtils.alert(mxResources.get('errorSavingFile'));
-				} else if(errorCode == 403) 
+				} else if (errorCode == 403)
 				{
 					mxGoogleDrive.editorUi.editor.setStatus(mxResources.get('errorSavingFileForbidden'));
 					mxUtils.alert(mxResources.get('errorSavingFileForbidden'));
-				} else if(errorCode == 404) 
+				} else if (errorCode == 404)
 				{
 					mxGoogleDrive.editorUi.editor.setStatus(mxResources.get('errorSavingFileNotFound'));
 					mxUtils.alert(mxResources.get('errorSavingFileNotFound'));
@@ -679,9 +679,9 @@ var mxGoogleDrive =
 				return this.ready;
 			}
 		},
-		'reauthorizing' : 
+		'reauthorizing' :
 		{
-			ok : function() 
+			ok : function()
 			{
 				mxGoogleDrive.saveOrUpdateFile.apply(mxGoogleDrive, mxGoogleDrive.saveArgs);
 			}
@@ -690,14 +690,36 @@ var mxGoogleDrive =
 		{
 			ok : function()
 			{
-				return this.ready;
+				var stateObject = this;
+				var editorUi = mxGoogleDrive.editorUi;
+				stateObject.setMachineState(stateObject.initializeSharing);
+
+				var init = function()
+				{
+					if(mxGoogleDrive.sharing == null) 
+					{
+						mxGoogleDrive.sharing = new gapi.drive.share.ShareClient(mxGoogleDrive.appID);
+						mxGoogleDrive.sharing.setItemIds([ mxGoogleDrive.getFileID() ]);
+					}
+
+					editorUi.actions.put('share', new Action(mxResources.get('share'), mxUtils.bind(this, function()
+					{
+						mxGoogleDrive.sharing.showSettingsDialog();
+					})));
+
+					mxGoogleDrive.stateMachine.ok();
+				}
+
+				gapi.load('drive-share', init);
+
+				//return this.initializeSharing;
 			},
 			retryOnError : function(fileId, stateObject)
 			{
 				mxLog.debug('loading timeout, try count  : ' + mxGoogleDrive.tryCount);
 				mxIntegration.spinner.stop();
 
-				var retryInterval = Math.pow(2, mxGoogleDrive.tryCount++) * 1000 + Math.random() * 1000;
+				var retryInterval = Math.pow(2, mxGoogleDrive.tryCount++) * 1000;
 
 				mxGoogleDrive.editorUi.editor.setStatus(mxResources.get('errorLoadingFile') + '. '
 						+ mxResources.get('retryingIn', [ retryInterval / 1000 ]));
@@ -705,9 +727,9 @@ var mxGoogleDrive =
 				mxGoogleDrive.loadRetryTimeout = setTimeout(function()
 				{
 					mxLog.debug('After : ', new Date());
-					mxGoogleDrive.loadFileMetaData.apply(mxGoogleDrive, [fileId, stateObject]);
-				}, retryInterval);
-				
+					mxGoogleDrive.loadFileMetaData.apply(mxGoogleDrive, [ fileId, stateObject ]);
+				}, retryInterval + Math.random() * 1000);
+
 			},
 			giveUpOnError : function()
 			{
@@ -725,6 +747,13 @@ var mxGoogleDrive =
 
 				mxGoogleDrive.editorUi.editor.setStatus(msg);
 				mxUtils.alert(msg);
+				return this.ready;
+			}
+		},
+		'initializeSharing' :
+		{
+			ok : function()
+			{
 				return this.ready;
 			}
 		}

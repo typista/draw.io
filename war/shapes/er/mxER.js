@@ -1,7 +1,9 @@
 /**
- * $Id: mxER.js,v 1.2 2013-01-17 15:56:40 mate Exp $
+ * $Id: mxER.js,v 1.4 2013-02-07 08:01:15 mate Exp $
  * Copyright (c) 2006-2010, JGraph Ltd
  */
+
+//TODO markers.html probably isn't needed, because it was used for testing during development before the new canvas was introduced
 
 //**********************************************************************************************************************************************************
 //Entity
@@ -30,8 +32,8 @@ mxUtils.extend(mxShapeEREntity, mxShape);
  */
 mxShapeEREntity.prototype.paintVertexShape = function(c, x, y, w, h)
 {
-	var mainText = mxUtils.getValue(this.style, mxERC.BUTTON_TEXT, 'Entity');
-	var fontColor = mxUtils.getValue(this.style, mxERC.STYLE_TEXTCOLOR, '#666666');
+	var mainText = mxUtils.getValue(this.style, 'buttonText', 'Entity');
+	var fontColor = mxUtils.getValue(this.style, 'textColor', '#666666');
 	var fontSize = mxUtils.getValue(this.style, mxConstants.STYLE_FONTSIZE, '17');
 	c.translate(x, y);
 	var rSize = 10;
@@ -44,9 +46,9 @@ mxShapeEREntity.prototype.paintVertexShape = function(c, x, y, w, h)
 
 mxShapeEREntity.prototype.background = function(c, x, y, w, h, rSize, fontColor)
 {
-	var buttonStyle = mxUtils.getValue(this.style, mxERC.BUTTON_STYLE, mxERC.ROUND).toString();
+	var buttonStyle = mxUtils.getValue(this.style, 'buttonStyle', 'round').toString();
 
-	if (buttonStyle === mxERC.ROUND)
+	if (buttonStyle === 'round')
 	{
 		c.begin();
 		c.moveTo(0, rSize);
@@ -60,7 +62,7 @@ mxShapeEREntity.prototype.background = function(c, x, y, w, h, rSize, fontColor)
 		c.close();	
 		c.fillAndStroke();
 	}
-	else if (buttonStyle === mxERC.RECT)
+	else if (buttonStyle === 'rect')
 	{
 		c.begin();
 		c.moveTo(0, 0);
@@ -70,7 +72,7 @@ mxShapeEREntity.prototype.background = function(c, x, y, w, h, rSize, fontColor)
 		c.close();	
 		c.fillAndStroke();
 	}
-	else if (buttonStyle === mxERC.DOUBLE_FRAME)
+	else if (buttonStyle === 'dblFrame')
 	{
 		var fillColor = mxUtils.getValue(this.style, mxConstants.STYLE_FILLCOLOR, '#ffffff');
 		c.setFillColor(fillColor);
@@ -101,7 +103,7 @@ mxShapeEREntity.prototype.mainText = function(c, x, y, w, h, text, fontSize, fon
 	c.text(w * 0.5, h * 0.5, 0, 0, text, mxConstants.ALIGN_CENTER, mxConstants.ALIGN_MIDDLE, 0, null, 0, 0, 0);
 };
 
-mxCellRenderer.prototype.defaultShapes[mxERC.SHAPE_ENTITY] = mxShapeEREntity;
+mxCellRenderer.prototype.defaultShapes['mxgraph.er.entity'] = mxShapeEREntity;
 
 //**********************************************************************************************************************************************************
 //Entity Extended
@@ -130,12 +132,12 @@ mxUtils.extend(mxShapeEREntityExt, mxShape);
  */
 mxShapeEREntityExt.prototype.paintVertexShape = function(c, x, y, w, h)
 {
-	var mainText = mxUtils.getValue(this.style, mxERC.BUTTON_TEXT, 'Entity');
-	var attributes = mxUtils.getValue(this.style, mxERC.SUB_TEXT, '+ attribute 1,+ attribute 2,+ attribute 3').toString().split(',');
+	var mainText = mxUtils.getValue(this.style, 'buttonText', 'Entity');
+	var attributes = mxUtils.getValue(this.style, 'subText', '+ attribute 1,+ attribute 2,+ attribute 3').toString().split(',');
 	var strokeColor = mxUtils.getValue(this.style, mxConstants.STYLE_STROKECOLOR, '#666666');
 	var fontSize = mxUtils.getValue(this.style, mxConstants.STYLE_FONTSIZE, '17');
 	var mainColor = mxUtils.getValue(this.style, mxConstants.STYLE_FILLCOLOR, '#008cff');
-	var attrColor = mxUtils.getValue(this.style, mxERC.STYLE_FILLCOLOR2, '#ffffff');
+	var attrColor = mxUtils.getValue(this.style, 'fillColor2', '#ffffff');
 	var maxTextWidth = 0;
 	c.translate(x, y);
 	var rSize = 10;
@@ -162,10 +164,10 @@ mxShapeEREntityExt.prototype.paintVertexShape = function(c, x, y, w, h)
 
 mxShapeEREntityExt.prototype.background = function(c, x, y, w, h, rSize)
 {
-	var buttonStyle = mxUtils.getValue(this.style, mxERC.BUTTON_STYLE, mxERC.ROUND).toString();
+	var buttonStyle = mxUtils.getValue(this.style, 'buttonStyle', 'round').toString();
 	c.begin();
 
-	if (buttonStyle === mxERC.ROUND)
+	if (buttonStyle === 'round')
 	{
 		c.moveTo(0, rSize);
 		c.arcTo(rSize, rSize, 0, 0, 1, rSize, 0);
@@ -176,7 +178,7 @@ mxShapeEREntityExt.prototype.background = function(c, x, y, w, h, rSize)
 		c.lineTo(rSize, h);
 		c.arcTo(rSize, rSize, 0, 0, 1, 0, h - rSize);
 	}
-	else if (buttonStyle === mxERC.RECT)
+	else if (buttonStyle === 'rect')
 	{
 		c.moveTo(0, 0);
 		c.lineTo(w, 0);
@@ -198,9 +200,9 @@ mxShapeEREntityExt.prototype.mainText = function(c, x, y, w, h, text, fontSize, 
 
 mxShapeEREntityExt.prototype.shapes = function(c, x, y, w, h, fontSize, mainColor, attrColor, rSize, barY)
 {
-	var buttonStyle = mxUtils.getValue(this.style, mxERC.BUTTON_STYLE, mxERC.ROUND).toString();
+	var buttonStyle = mxUtils.getValue(this.style, 'buttonStyle', 'round').toString();
 
-	if (buttonStyle === mxERC.ROUND)
+	if (buttonStyle === 'round')
 	{
 		c.begin();
 		c.moveTo(0, rSize);
@@ -223,7 +225,7 @@ mxShapeEREntityExt.prototype.shapes = function(c, x, y, w, h, fontSize, mainColo
 		c.close();
 		c.fill();
 	}
-	else if (buttonStyle === mxERC.RECT)
+	else if (buttonStyle === 'rect')
 	{
 		c.begin();
 		c.moveTo(0, 0);
@@ -245,7 +247,7 @@ mxShapeEREntityExt.prototype.shapes = function(c, x, y, w, h, fontSize, mainColo
 
 	c.begin();
 
-	if (buttonStyle === mxERC.ROUND)
+	if (buttonStyle === 'round')
 	{
 		c.moveTo(0, rSize);
 		c.arcTo(rSize, rSize, 0, 0, 1, rSize, 0);
@@ -256,7 +258,7 @@ mxShapeEREntityExt.prototype.shapes = function(c, x, y, w, h, fontSize, mainColo
 		c.lineTo(rSize, h);
 		c.arcTo(rSize, rSize, 0, 0, 1, 0, h - rSize);
 	}
-	else if (buttonStyle === mxERC.RECT)
+	else if (buttonStyle === 'rect')
 	{
 		c.moveTo(0, 0);
 		c.lineTo(w, 0);
@@ -279,7 +281,7 @@ mxShapeEREntityExt.prototype.attrText = function(c, x, y, w, h, attributes, font
 	}
 };
 
-mxCellRenderer.prototype.defaultShapes[mxERC.SHAPE_ENTITY_EXT] = mxShapeEREntityExt;
+mxCellRenderer.prototype.defaultShapes['mxgraph.er.entityExt'] = mxShapeEREntityExt;
 
 //**********************************************************************************************************************************************************
 //Attribute
@@ -308,8 +310,8 @@ mxUtils.extend(mxShapeERAttribute, mxShape);
  */
 mxShapeERAttribute.prototype.paintVertexShape = function(c, x, y, w, h)
 {
-	var mainText = mxUtils.getValue(this.style, mxERC.BUTTON_TEXT, 'Entity');
-	var fontColor = mxUtils.getValue(this.style, mxERC.STYLE_FONTCOLOR, '#666666');
+	var mainText = mxUtils.getValue(this.style, 'buttonText', 'Entity');
+	var fontColor = mxUtils.getValue(this.style, 'textColor', '#666666');
 	var fontSize = mxUtils.getValue(this.style, mxConstants.STYLE_FONTSIZE, '17');
 	c.translate(x, y);
 	var rSize = 10;
@@ -322,15 +324,15 @@ mxShapeERAttribute.prototype.paintVertexShape = function(c, x, y, w, h)
 
 mxShapeERAttribute.prototype.background = function(c, x, y, w, h, rSize, fontColor)
 {
-	var buttonStyle = mxUtils.getValue(this.style, mxERC.BUTTON_STYLE, mxERC.SIMPLE).toString();
+	var buttonStyle = mxUtils.getValue(this.style, 'buttonStyle', 'simple').toString();
 
-	if (buttonStyle === mxERC.SIMPLE)
+	if (buttonStyle === 'simple')
 	{
 		c.begin();
 		c.ellipse(0, 0, w, h);
 		c.fillAndStroke();
 	}
-	else if (buttonStyle === mxERC.DOUBLE_FRAME)
+	else if (buttonStyle === 'dblFrame')
 	{
 		var fillColor = mxUtils.getValue(this.style, mxConstants.STYLE_FILLCOLOR, '#666666');
 		c.setFillColor(fillColor);
@@ -352,7 +354,7 @@ mxShapeERAttribute.prototype.mainText = function(c, x, y, w, h, text, fontSize, 
 	c.text(w * 0.5, h * 0.5, 0, 0, text, mxConstants.ALIGN_CENTER, mxConstants.ALIGN_MIDDLE, 0, null, 0, 0, 0);
 };
 
-mxCellRenderer.prototype.defaultShapes[mxERC.SHAPE_ATTRIBUTE] = mxShapeERAttribute;
+mxCellRenderer.prototype.defaultShapes['mxgraph.er.attribute'] = mxShapeERAttribute;
 
 //**********************************************************************************************************************************************************
 //Has
@@ -381,8 +383,8 @@ mxUtils.extend(mxShapeERHas, mxShape);
  */
 mxShapeERHas.prototype.paintVertexShape = function(c, x, y, w, h)
 {
-	var mainText = mxUtils.getValue(this.style, mxERC.BUTTON_TEXT, 'Entity');
-	var fontColor = mxUtils.getValue(this.style, mxERC.STYLE_FONTCOLOR, '#666666');
+	var mainText = mxUtils.getValue(this.style, 'buttonText', 'Entity');
+	var fontColor = mxUtils.getValue(this.style, 'textColor', '#666666');
 	var fontSize = mxUtils.getValue(this.style, mxConstants.STYLE_FONTSIZE, '17');
 	c.translate(x, y);
 	var rSize = 10;
@@ -395,9 +397,9 @@ mxShapeERHas.prototype.paintVertexShape = function(c, x, y, w, h)
 
 mxShapeERHas.prototype.background = function(c, x, y, w, h, rSize, fontColor)
 {
-	var buttonStyle = mxUtils.getValue(this.style, mxERC.BUTTON_STYLE, mxERC.RHOMBUS).toString();
+	var buttonStyle = mxUtils.getValue(this.style, 'buttonStyle', 'rhombus').toString();
 
-	if (buttonStyle === mxERC.RHOMBUS)
+	if (buttonStyle === 'rhombus')
 	{
 		c.begin();
 		c.moveTo(0, h * 0.5);
@@ -407,7 +409,7 @@ mxShapeERHas.prototype.background = function(c, x, y, w, h, rSize, fontColor)
 		c.close();	
 		c.fillAndStroke();
 	}
-	else if (buttonStyle === mxERC.DOUBLE_FRAME)
+	else if (buttonStyle === 'dblFrame')
 	{
 		var fillColor = mxUtils.getValue(this.style, mxConstants.STYLE_FILLCOLOR, '#666666');
 		c.setFillColor(fillColor);
@@ -436,7 +438,7 @@ mxShapeERHas.prototype.mainText = function(c, x, y, w, h, text, fontSize, fontCo
 	c.text(w * 0.5, h * 0.5, 0, 0, text, mxConstants.ALIGN_CENTER, mxConstants.ALIGN_MIDDLE, 0, null, 0, 0, 0);
 };
 
-mxCellRenderer.prototype.defaultShapes[mxERC.SHAPE_HAS] = mxShapeERHas;
+mxCellRenderer.prototype.defaultShapes['mxgraph.er.has'] = mxShapeERHas;
 
 //**********************************************************************************************************************************************************
 //Cloud
@@ -465,8 +467,8 @@ mxUtils.extend(mxShapeERCloud, mxShape);
  */
 mxShapeERCloud.prototype.paintVertexShape = function(c, x, y, w, h)
 {
-	var mainText = mxUtils.getValue(this.style, mxERC.BUTTON_TEXT, 'Entity');
-	var fontColor = mxUtils.getValue(this.style, mxERC.STYLE_FONTCOLOR, '#666666');
+	var mainText = mxUtils.getValue(this.style, 'buttonText', 'Entity');
+	var fontColor = mxUtils.getValue(this.style, 'textColor', '#666666');
 	var fontSize = mxUtils.getValue(this.style, mxConstants.STYLE_FONTSIZE, '17');
 	c.translate(x, y);
 	var rSize = 10;
@@ -498,7 +500,7 @@ mxShapeERCloud.prototype.mainText = function(c, x, y, w, h, text, fontSize, font
 	c.text(w * 0.5, h * 0.5, 0, 0, text, mxConstants.ALIGN_CENTER, mxConstants.ALIGN_MIDDLE, 0, null, 0, 0, 0);
 };
 
-mxCellRenderer.prototype.defaultShapes[mxERC.SHAPE_CLOUD] = mxShapeERCloud;
+mxCellRenderer.prototype.defaultShapes['mxgraph.er.cloud'] = mxShapeERCloud;
 
 //**********************************************************************************************************************************************************
 //Hierarchy
@@ -527,9 +529,9 @@ mxUtils.extend(mxShapeERHierarchy, mxShape);
  */
 mxShapeERHierarchy.prototype.paintVertexShape = function(c, x, y, w, h)
 {
-	var mainText = mxUtils.getValue(this.style, mxERC.BUTTON_TEXT, 'main').toString().split(',');
-	var subText = mxUtils.getValue(this.style, mxERC.SUB_TEXT, 'sub').toString().split(',');
-	var fontColor = mxUtils.getValue(this.style, mxERC.STYLE_FONTCOLOR, '#666666');
+	var mainText = mxUtils.getValue(this.style, 'buttonText', 'main').toString().split(',');
+	var subText = mxUtils.getValue(this.style, 'subText', 'sub').toString().split(',');
+	var fontColor = mxUtils.getValue(this.style, 'textColor', '#666666');
 	var fontSize = mxUtils.getValue(this.style, mxConstants.STYLE_FONTSIZE, '17');
 	c.translate(x, y);
 	var rSize = 10;
@@ -542,9 +544,9 @@ mxShapeERHierarchy.prototype.paintVertexShape = function(c, x, y, w, h)
 
 mxShapeERHierarchy.prototype.background = function(c, x, y, w, h, rSize, fontColor)
 {
-	var buttonStyle = mxUtils.getValue(this.style, mxERC.BUTTON_STYLE, mxERC.ROUND).toString();
+	var buttonStyle = mxUtils.getValue(this.style, 'buttonStyle', 'round').toString();
 
-	if (buttonStyle === mxERC.ROUND)
+	if (buttonStyle === 'round')
 	{
 		c.begin();
 		c.moveTo(0, rSize);
@@ -558,7 +560,7 @@ mxShapeERHierarchy.prototype.background = function(c, x, y, w, h, rSize, fontCol
 		c.close();	
 		c.fillAndStroke();
 	}
-	else if (buttonStyle === mxERC.RECT)
+	else if (buttonStyle === 'rect')
 	{
 		c.begin();
 		c.moveTo(0, 0);
@@ -568,7 +570,7 @@ mxShapeERHierarchy.prototype.background = function(c, x, y, w, h, rSize, fontCol
 		c.close();	
 		c.fillAndStroke();
 	}
-	else if (buttonStyle === mxERC.DOUBLE_FRAME)
+	else if (buttonStyle === 'dblFrame')
 	{
 		var fillColor = mxUtils.getValue(this.style, mxConstants.STYLE_FILLCOLOR, '#666666');
 		c.setFillColor(fillColor);
@@ -592,7 +594,7 @@ mxShapeERHierarchy.prototype.background = function(c, x, y, w, h, rSize, fontCol
 	var trX = 0;
 	var trY = 0;
 
-	if (buttonStyle === mxERC.ROUND)
+	if (buttonStyle === 'round')
 	{
 		trX = w * 0.5;
 		trY = rSize;
@@ -611,7 +613,7 @@ mxShapeERHierarchy.prototype.background = function(c, x, y, w, h, rSize, fontCol
 		c.close();	
 		c.fillAndStroke();
 	}
-	else if (buttonStyle === mxERC.RECT)
+	else if (buttonStyle === 'rect')
 	{
 		trX = w * 0.5;
 		trY = rSize;
@@ -626,7 +628,7 @@ mxShapeERHierarchy.prototype.background = function(c, x, y, w, h, rSize, fontCol
 		c.close();	
 		c.fillAndStroke();
 	}
-	else if (buttonStyle === mxERC.DOUBLE_FRAME)
+	else if (buttonStyle === 'dblFrame')
 	{
 		trX = w * 0.5;
 		trY = rSize * 0.15;
@@ -667,7 +669,7 @@ mxShapeERHierarchy.prototype.shapeText = function(c, x, y, w, h, text, subText, 
 	c.text(w * 0.7, (h + fontSize) * 0.5, 0, 0, subText[1], mxConstants.ALIGN_CENTER, mxConstants.ALIGN_MIDDLE, 0, null, 0, 0, 0);
 };
 
-mxCellRenderer.prototype.defaultShapes[mxERC.SHAPE_HIERARCHY] = mxShapeERHierarchy;
+mxCellRenderer.prototype.defaultShapes['mxgraph.er.hierarchy'] = mxShapeERHierarchy;
 
 //**********************************************************************************************************************************************************
 //Note
@@ -696,10 +698,10 @@ mxUtils.extend(mxShapeERNote, mxShape);
  */
 mxShapeERNote.prototype.paintVertexShape = function(c, x, y, w, h)
 {
-	var mainText = mxUtils.getValue(this.style, mxERC.BUTTON_TEXT, 'Entity');
-	var fontColor = mxUtils.getValue(this.style, mxERC.STYLE_FONTCOLOR, '#666666');
+	var mainText = mxUtils.getValue(this.style, 'buttonText', 'Entity');
+	var fontColor = mxUtils.getValue(this.style, 'textColor', '#666666');
 	var fontSize = mxUtils.getValue(this.style, mxConstants.STYLE_FONTSIZE, '17');
-	var backColor = mxUtils.getValue(this.style, mxERC.fillColor2, '#ffffff');
+	var backColor = mxUtils.getValue(this.style, 'fillColor2', '#ffffff');
 	c.translate(x, y);
 	var flipSize = 20;
 	w = Math.max(w, flipSize * 2);
@@ -742,7 +744,7 @@ mxShapeERNote.prototype.mainText = function(c, x, y, w, h, text, fontSize, fontC
 	c.text(w * 0.5, h * 0.5, 0, 0, text, mxConstants.ALIGN_CENTER, mxConstants.ALIGN_MIDDLE, 0, null, 0, 0, 0);
 };
 
-mxCellRenderer.prototype.defaultShapes[mxERC.SHAPE_NOTE] = mxShapeERNote;
+mxCellRenderer.prototype.defaultShapes['mxgraph.er.note'] = mxShapeERNote;
 
 //**********************************************************************************************************************************************************
 //Chen's Notation Legend
@@ -771,7 +773,7 @@ mxUtils.extend(mxShapeERChen, mxShape);
  */
 mxShapeERChen.prototype.paintVertexShape = function(c, x, y, w, h)
 {
-	var fontColor = mxUtils.getValue(this.style, mxERC.STYLE_FONTCOLOR, '#666666');
+	var fontColor = mxUtils.getValue(this.style, 'textColor', '#666666');
 	var fontSize = mxUtils.getValue(this.style, mxConstants.STYLE_FONTSIZE, '17');
 	c.translate(x, y);
 	var flipSize = 20;
@@ -834,7 +836,7 @@ mxShapeERChen.prototype.foreground = function(c, x, y, w, h, fontSize, fontColor
 	c.text(w * 0.875, h * 0.875, 0, 0, 'Mandatory', mxConstants.ALIGN_CENTER, mxConstants.ALIGN_MIDDLE, 0, null, 0, 0, 0);
 };
 
-mxCellRenderer.prototype.defaultShapes[mxERC.SHAPE_CHENS] = mxShapeERChen;
+mxCellRenderer.prototype.defaultShapes['mxgraph.er.chens'] = mxShapeERChen;
 
 //**********************************************************************************************************************************************************
 //Bachman's Notation Legend
@@ -863,7 +865,7 @@ mxUtils.extend(mxShapeERBachman, mxShape);
  */
 mxShapeERBachman.prototype.paintVertexShape = function(c, x, y, w, h)
 {
-	var fontColor = mxUtils.getValue(this.style, mxERC.STYLE_TEXTCOLOR, '#666666');
+	var fontColor = mxUtils.getValue(this.style, 'textColor', '#666666');
 	var fontSize = mxUtils.getValue(this.style, mxConstants.STYLE_FONTSIZE, '17');
 	c.translate(x, y);
 	this.background(c, x, y, w, h);
@@ -902,7 +904,6 @@ mxShapeERBachman.prototype.foreground = function(c, x, y, w, h, fontSize, fontCo
 
 	c.moveTo(w * 0.5, h * 0.125);
 	c.lineTo(w * 0.5, h);
-	c.close();	
 	c.stroke();
 
 	c.begin();
@@ -971,7 +972,7 @@ mxShapeERBachman.prototype.foreground = function(c, x, y, w, h, fontSize, fontCo
 	c.fillAndStroke();
 };
 
-mxCellRenderer.prototype.defaultShapes[mxERC.SHAPE_BACHMANS] = mxShapeERBachman;
+mxCellRenderer.prototype.defaultShapes['mxgraph.er.bachmans'] = mxShapeERBachman;
 
 //**********************************************************************************************************************************************************
 //Information Engineering Notation Legend
@@ -1000,7 +1001,7 @@ mxUtils.extend(mxShapeERInfEng, mxShape);
  */
 mxShapeERInfEng.prototype.paintVertexShape = function(c, x, y, w, h)
 {
-	var fontColor = mxUtils.getValue(this.style, mxERC.STYLE_FONTCOLOR, '#666666');
+	var fontColor = mxUtils.getValue(this.style, 'textColor', '#666666');
 	var fontSize = mxUtils.getValue(this.style, mxConstants.STYLE_FONTSIZE, '17');
 	c.translate(x, y);
 	w = Math.max(w, h / 1.5);
@@ -1088,9 +1089,9 @@ mxShapeERInfEng.prototype.foreground = function(c, x, y, w, h, fontSize, fontCol
 	c.fillAndStroke();
 };
 
-mxCellRenderer.prototype.defaultShapes[mxERC.SHAPE_IE] = mxShapeERInfEng;
+mxCellRenderer.prototype.defaultShapes['mxgraph.er.ie'] = mxShapeERInfEng;
 
-mxMarker.addMarker(mxERC.MARKER_ONE, function(c, shape, type, pe, unitX, unitY, size, source, sw, filled)
+mxMarker.addMarker('ERone', function(c, shape, type, pe, unitX, unitY, size, source, sw, filled)
 		{
 	var nx = unitX * (size + sw + 1);
 	var ny = unitY * (size + sw + 1);
@@ -1104,7 +1105,7 @@ mxMarker.addMarker(mxERC.MARKER_ONE, function(c, shape, type, pe, unitX, unitY, 
 	};
 		});
 
-mxMarker.addMarker(mxERC.MARKER_MANDATORY_ONE, function(c, shape, type, pe, unitX, unitY, size, source, sw, filled)
+mxMarker.addMarker('ERmandOne', function(c, shape, type, pe, unitX, unitY, size, source, sw, filled)
 		{
 	var nx = unitX * (size + sw + 1);
 	var ny = unitY * (size + sw + 1);
@@ -1120,7 +1121,7 @@ mxMarker.addMarker(mxERC.MARKER_MANDATORY_ONE, function(c, shape, type, pe, unit
 	};
 		});
 
-mxMarker.addMarker(mxERC.MARKER_MANY, function(c, shape, type, pe, unitX, unitY, size, source, sw, filled)
+mxMarker.addMarker('ERmany', function(c, shape, type, pe, unitX, unitY, size, source, sw, filled)
 		{
 	var nx = unitX * (size + sw + 1);
 	var ny = unitY * (size + sw + 1);
@@ -1135,7 +1136,7 @@ mxMarker.addMarker(mxERC.MARKER_MANY, function(c, shape, type, pe, unitX, unitY,
 	};
 		});
 
-mxMarker.addMarker(mxERC.MARKER_ONE_TO_MANY, function(c, shape, type, pe, unitX, unitY, size, source, sw, filled)
+mxMarker.addMarker('ERoneToMany', function(c, shape, type, pe, unitX, unitY, size, source, sw, filled)
 		{
 	var nx = unitX * (size + sw + 1);
 	var ny = unitY * (size + sw + 1);
@@ -1152,7 +1153,7 @@ mxMarker.addMarker(mxERC.MARKER_ONE_TO_MANY, function(c, shape, type, pe, unitX,
 	};
 		});
 
-mxMarker.addMarker(mxERC.MARKER_ZERO_TO_MANY, function(c, shape, type, pe, unitX, unitY, size, source, sw, filled)
+mxMarker.addMarker('ERzeroToMany', function(c, shape, type, pe, unitX, unitY, size, source, sw, filled)
 		{
 	var nx = unitX * (size + sw + 1);
 	var ny = unitY * (size + sw + 1);
@@ -1185,7 +1186,7 @@ mxMarker.addMarker(mxERC.MARKER_ZERO_TO_MANY, function(c, shape, type, pe, unitX
 	};
 		});
 
-mxMarker.addMarker(mxERC.MARKER_ZERO_TO_ONE, function(c, shape, type, pe, unitX, unitY, size, source, sw, filled)
+mxMarker.addMarker('ERzeroToOne', function(c, shape, type, pe, unitX, unitY, size, source, sw, filled)
 		{
 	var nx = unitX * (size + sw + 1);
 	var ny = unitY * (size + sw + 1);

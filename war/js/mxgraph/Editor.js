@@ -1,5 +1,5 @@
 /**
- * $Id: Editor.js,v 1.13 2013-02-02 15:53:46 gaudenz Exp $
+ * $Id: Editor.js,v 1.51 2013-01-24 14:41:14 gaudenz Exp $
  * Copyright (c) 2006-2012, JGraph Ltd
  */
 // Specifies if local storage should be used (eg. on the iPad which has no filesystem)
@@ -123,7 +123,7 @@ Editor.prototype.setGraphXml = function(node)
 	
 	if (node.nodeName == 'mxGraphModel')
 	{
-		this.graph.view.scale = 1;
+		this.graph.view.scale = Number(node.getAttribute('scale') || 1);
 		this.graph.gridEnabled = node.getAttribute('grid') != '0';
 		this.graph.graphHandler.guidesEnabled = node.getAttribute('guides') != '0';
 		this.graph.setTooltips(node.getAttribute('tooltips') != '0');
@@ -189,6 +189,11 @@ Editor.prototype.getGraphXml = function()
 	{
 		node.setAttribute('dx', Math.round(this.graph.view.translate.x * 100) / 100);
 		node.setAttribute('dy', Math.round(this.graph.view.translate.y * 100) / 100);
+	}
+	
+	if (this.graph.view.scale != 1)
+	{
+		node.setAttribute('scale', Math.round(this.graph.view.scale * 1000) / 1000);
 	}
 	
 	node.setAttribute('grid', (this.graph.isGridEnabled()) ? '1' : '0');
@@ -403,8 +408,6 @@ Editor.prototype.init = function()
 		}
 	};
 	
-	var editor = this;
-	
 	// Uses HTML for background pages (to support grid background image)
 	mxGraphView.prototype.validateBackground = function()
 	{
@@ -452,7 +455,6 @@ Editor.prototype.init = function()
 				this.backgroundPageShape.redraw();
 				
 				this.backgroundPageShape.node.className = 'geBackgroundPage';
-				this.backgroundPageShape.node.style.backgroundPosition = '-1px -1px';
 				
 				// Adds listener for double click handling on background
 				mxEvent.addListener(this.backgroundPageShape.node, 'dblclick',
@@ -462,13 +464,19 @@ Editor.prototype.init = function()
 					})
 				);
 				
+				var md = (mxClient.IS_TOUCH) ? 'touchstart' : 'mousedown';
+				var mm = (mxClient.IS_TOUCH) ? 'touchmove' : 'mousemove';
+				var mu = (mxClient.IS_TOUCH) ? 'touchend' : 'mouseup';
+
 				// Adds basic listeners for graph event dispatching outside of the
 				// container and finishing the handling of a single gesture
-				mxEvent.addGestureListeners(this.backgroundPageShape.node,
+				mxEvent.addListener(this.backgroundPageShape.node, md,
 					mxUtils.bind(this, function(evt)
 					{
 						this.graph.fireMouseEvent(mxEvent.MOUSE_DOWN, new mxMouseEvent(evt));
-					}),
+					})
+				);
+				mxEvent.addListener(this.backgroundPageShape.node, mm,
 					mxUtils.bind(this, function(evt)
 					{
 						// Hides the tooltip if mouse is outside container
@@ -484,12 +492,15 @@ Editor.prototype.init = function()
 							this.graph.fireMouseEvent(mxEvent.MOUSE_MOVE,
 								new mxMouseEvent(evt));
 						}
-					}),
+					})
+				);
+				mxEvent.addListener(this.backgroundPageShape.node, mu,
 					mxUtils.bind(this, function(evt)
 					{
 						this.graph.fireMouseEvent(mxEvent.MOUSE_UP,
 								new mxMouseEvent(evt));
-					}));
+					})
+				);
 			}
 			else
 			{
@@ -497,9 +508,6 @@ Editor.prototype.init = function()
 				this.backgroundPageShape.bounds = bounds;
 				this.backgroundPageShape.redraw();
 			}
-			
-			this.backgroundPageShape.node.style.backgroundImage = (this.graph.isGridEnabled()) ?
-					'url(' + editor.gridImage + ')' : 'none';
 		}
 		else if (this.backgroundPageShape != null)
 		{
@@ -556,6 +564,7 @@ Editor.prototype.init = function()
 					pageBreak.isDashed = this.pageBreakDashed;
 					pageBreak.addPipe = false;
 					pageBreak.scale = scale;
+					pageBreak.crisp = true;
 					pageBreak.init(this.view.backgroundPane);
 					pageBreak.redraw();
 					
@@ -596,6 +605,7 @@ Editor.prototype.init = function()
 					pageBreak.isDashed = this.pageBreakDashed;
 					pageBreak.addPipe = false;
 					pageBreak.scale = scale;
+					pageBreak.crisp = true;
 					pageBreak.init(this.view.backgroundPane);
 					pageBreak.redraw();
 		
@@ -660,6 +670,11 @@ Editor.prototype.init = function()
 		
 		return result;
 	};
+	
+	
+	// Experimental add/remove waypoints
+	mxEdgeHandler.prototype.addEnabled = true;
+	mxEdgeHandler.prototype.removeEnabled = true;
 
 	// Selects descendants before children selection mode
 	var graphHandlerGetInitialCellForEvent = mxGraphHandler.prototype.getInitialCellForEvent;
@@ -787,7 +802,7 @@ Editor.prototype.createUndoManager = function()
 };
 
 /**
- * Adds basic stencil set (no namespace).
+ * Overrides stencil registry to add dynamic loading.
  */
 Editor.prototype.initStencilRegistry = function()
 {
@@ -795,24 +810,9 @@ Editor.prototype.initStencilRegistry = function()
 	mxStencilRegistry.loadStencilSet(STENCIL_PATH + '/general.xml');
 };
 
-/**
- * Overrides stencil registry for dynamic loading of stencils.
- */
+// Overrides stencil registry for dynamic loading
 (function()
 {
-	/**
-	 * Maps from library names to an array of Javascript filenames,
-	 * which are synchronously loaded. Currently only stencil files
-	 * (.xml) and JS files (.js) are supported.
-	 * IMPORTANT: For embedded diagrams to work entries must also
-	 * be added in EmbedServlet.java.
-	 */
-	mxStencilRegistry.libraries = {};
-
-	/**
-	 * Stores all package names that have been dynamically loaded.
-	 * Each package is only loaded once.
-	 */
 	mxStencilRegistry.packages = [];
 	
 	// Extends the default stencil registry to add dynamic loading
@@ -827,46 +827,7 @@ Editor.prototype.initStencilRegistry = function()
 			// Loads stencil files and tries again
 			if (basename != null)
 			{
-				var libs = mxStencilRegistry.libraries[basename];
-
-				if (libs != null)
-				{
-					if (mxStencilRegistry.packages[basename] == null)
-					{
-						mxStencilRegistry.packages[basename] = 1;
-						
-						for (var i = 0; i < libs.length; i++)
-						{
-							var fname = libs[i];
-							
-							if (fname.toLowerCase().substring(fname.length - 4, fname.length) == '.xml')
-							{
-								mxStencilRegistry.loadStencilSet(fname, null);
-							}
-							else if (fname.toLowerCase().substring(fname.length - 3, fname.length) == '.js')
-							{
-								var req = mxUtils.load(fname);
-								
-								if (req != null)
-								{
-									eval.call(window, req.getText());
-								}
-							}
-							else
-							{
-								// FIXME: This does not yet work as the loading is triggered after
-								// the shape was used in the graph, at which point the keys have
-								// typically been translated in the calling method.
-								//mxResources.add(fname);
-							}
-						}
-					}
-				}
-				else
-				{
-					mxStencilRegistry.loadStencilSet(STENCIL_PATH + '/' + basename + '.xml', null);
-				}
-				
+				mxStencilRegistry.loadStencilSet(STENCIL_PATH + '/' + basename + '.xml', null);
 				result = mxStencilRegistry.stencils[name];
 			}
 		}
@@ -900,21 +861,13 @@ Editor.prototype.initStencilRegistry = function()
 		force = (force != null) ? force : false;
 		
 		// Uses additional cache for detecting previous load attempts
-		var xmlDoc = mxStencilRegistry.packages[stencilFile];
+		var installed = mxStencilRegistry.packages[stencilFile] != null;
 		
-		if (force || xmlDoc == null)
+		if (force || !installed)
 		{
-			var install = false;
-			
-			if (xmlDoc == null)
-			{
-				var req = mxUtils.load(stencilFile);
-				xmlDoc = req.getXml();
-				mxStencilRegistry.packages[stencilFile] = xmlDoc;
-				install = true;
-			}
-		
-			mxStencilRegistry.parseStencilSet(xmlDoc, postStencilLoad, install);
+			mxStencilRegistry.packages[stencilFile] = 1;
+			var req = mxUtils.load(stencilFile);
+			mxStencilRegistry.parseStencilSet(req.getXml(), postStencilLoad, !installed);
 		}
 	};
 	
@@ -940,6 +893,12 @@ Editor.prototype.initStencilRegistry = function()
 				
 				if (name != null)
 				{
+					var w = shape.getAttribute('w');
+					var h = shape.getAttribute('h');
+					
+					w = (w == null) ? 80 : parseInt(w, 10);
+					h = (h == null) ? 80 : parseInt(h, 10);
+					
 					packageName = packageName.toLowerCase();
 					var stencilName = name.replace(/ /g,"_");
 						
@@ -950,12 +909,6 @@ Editor.prototype.initStencilRegistry = function()
 	
 					if (postStencilLoad != null)
 					{
-						var w = shape.getAttribute('w');
-						var h = shape.getAttribute('h');
-						
-						w = (w == null) ? 80 : parseInt(w, 10);
-						h = (h == null) ? 80 : parseInt(h, 10);
-
 						postStencilLoad(packageName, stencilName, name, w, h);
 					}
 				}

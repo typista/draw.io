@@ -1,5 +1,5 @@
 /**
- * $Id: Toolbar.js,v 1.2 2012-12-02 13:52:35 gaudenz Exp $
+ * $Id: Toolbar.js,v 1.12 2012-06-08 15:07:04 gaudenz Exp $
  * Copyright (c) 2006-2012, JGraph Ltd
  */
 /**
@@ -12,7 +12,8 @@ function Toolbar(editorUi, container)
 	this.init();
 
 	// Global handler to hide the current menu
-	mxEvent.addGestureListeners(document, mxUtils.bind(this, function(evt)
+	var md = (mxClient.IS_TOUCH) ? 'touchstart' : 'mousedown';
+	mxEvent.addListener(document, md, mxUtils.bind(this, function(evt)
 	{
 		this.hideMenu();
 	}));
