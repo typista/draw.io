@@ -1,5 +1,5 @@
 /*
- * $Id: rawinflate.js,v 1.1 2012-08-21 20:12:49 gaudenz Exp $
+ * $Id: rawinflate.js,v 1.1 2012/08/21 20:12:49 gaudenz Exp $
  *
  * original:
  * http://www.onicos.com/staff/iz/amuse/javascript/expert/inflate.txt

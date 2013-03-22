@@ -1,5 +1,5 @@
 /*
- * $Id: Diagramly.js,v 1.64 2013-02-16 17:10:19 boris Exp $
+ * $Id: Diagramly.js,v 1.68 2013/03/19 18:39:48 boris Exp $
  * Copyright (c) 2006-2010, JGraph Ltd
  */
 // For compatibility with open servlet on GAE
@@ -227,7 +227,7 @@ function setCurrentXml(data, filename)
 	Sidebar.prototype.signs = signs;
 
 	// Adds all mockup stencils
-	var mockups = ['Calendars', 'Carousel', 'Charts and Tables', 'Controls', 'Form Elements', 'Menus and Buttons', 'Misc', 'Tabs'];
+	var mockups = ['Buttons', 'Containers', 'Forms', 'Graphics', 'Markup', 'Misc', 'Navigation', 'Text'];
 	Sidebar.prototype.mockups = mockups;
 
 	// Adds all Electrical stencils
@@ -281,13 +281,13 @@ function setCurrentXml(data, filename)
 			addItem(['uml'], 'UML');
 			addItem(['er'], 'Entity Relation');
 			addItem(['ios'], 'iOS');
-			addItem(['bpmn', 'bpmnGateways', 'bpmnEvents'], 'BPMN');
 			addItem(['flowchart'], 'Flowchart');
+			addItem(mockups, 'Mockups', 'mockup');
+			addItem(['bpmn', 'bpmnGateways', 'bpmnEvents'], 'BPMN');
 			addItem(['basic'], mxResources.get('basic'));
 			addItem(['arrows'], mxResources.get('arrows'));
 			addItem(['computer', 'finance', 'clipart', 'networking', 'people', 'telco'], 'Clipart');
 			addItem(signs, 'Signs', 'signs');
-			addItem(mockups, 'Mockup', 'ui');
 			addItem(ee, 'Electrical', 'electrical');
 			addItem(['Compute', 'ContentDelivery', 'Database', 'DeploymentManagement',
                      'Groups', 'Messaging', 'Misc', 'Networking', 'NonServiceSpecific',
@@ -320,11 +320,14 @@ function setCurrentXml(data, filename)
 			this.editorUi.dialog.container.style.overflow = 'auto';
 		}));
 		
-		this.editorUi.actions.addAction('fromText', mxUtils.bind(this, function()
+		if (urlParams['nerd'] == '1')
 		{
-			this.editorUi.showDialog(new ParseDialog(this.editorUi).container, 620, 420, true, true);
-			this.editorUi.dialog.container.style.overflow = 'auto';
-		}));
+			this.editorUi.actions.addAction('fromText', mxUtils.bind(this, function()
+			{
+				this.editorUi.showDialog(new ParseDialog(this.editorUi).container, 620, 420, true, true);
+				this.editorUi.dialog.container.style.overflow = 'auto';
+			}));
+		}
 
 		// Redirect formatting actions to tinyMce
 		var redirectFormatAction = mxUtils.bind(this, function(actionName, cmdName)
@@ -369,6 +372,15 @@ function setCurrentXml(data, filename)
 		{
 			window.open('http://support.draw.io');
 		})));
+		this.editorUi.actions.put('video', new Action('Video Tutorial', mxUtils.bind(this, function()
+		{
+			window.open('http://youtu.be/d-Nf0uNsR8w');
+		})));
+		
+		this.editorUi.actions.put('gPlusCommunity', new Action('Google+ Community', mxUtils.bind(this, function()
+		{
+			window.open('https://plus.google.com/b/100634082864796769666/communities/103111053636844545203');
+		})));
 		this.editorUi.actions.put('stackExchange', new Action('draw.io @ StackExchange', mxUtils.bind(this, function()
 		{
 			window.open('http://webapps.stackexchange.com/questions/tagged/draw.io');
@@ -376,6 +388,10 @@ function setCurrentXml(data, filename)
 		this.editorUi.actions.put('github', new Action('draw.io @ GitHub', mxUtils.bind(this, function()
 		{
 			window.open('https://github.com/jgraph/draw.io');
+		})));
+		this.editorUi.actions.put('status', new Action('Status', mxUtils.bind(this, function()
+		{
+			window.open('http://status.draw.io/');
 		})));
 		this.editorUi.actions.addAction('image', function()
 		{
@@ -504,7 +520,7 @@ function setCurrentXml(data, filename)
 		
 		this.put('help', new Menu(mxUtils.bind(this, function(menu, parent)
 		{
-			this.addMenuItems(menu, ['help', 'github', 'stackExchange', '-', 'about']);
+			this.addMenuItems(menu, ['help', 'video', 'gPlusCommunity', 'github', 'stackExchange', '-', 'status', 'about']);
 			
 			if (urlParams['test'] == '1')
 			{
@@ -587,6 +603,11 @@ function setCurrentXml(data, filename)
 			this.addSubmenu('new', menu, parent);
 			this.addMenuItems(menu, ['open', '-', 'save', 'saveAs', '-'], parent);
 
+			if (this.editorUi.actions.get('rename') != null && mxGoogleDrive.fileInfo.editable)
+			{
+				this.addMenuItems(menu, ['-', 'rename', '-'], parent);
+			}
+			
 			if (this.editorUi.actions.get('share') != null)
 			{
 				this.addMenuItems(menu, ['-', 'share', '-'], parent);

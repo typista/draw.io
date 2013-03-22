@@ -1,5 +1,5 @@
 /**
- * $Id: ProxyServlet.java,v 1.2 2012-10-17 12:44:34 david Exp $
+ * $Id: ProxyServlet.java,v 1.2 2012/10/17 12:44:34 david Exp $
  * Copyright (c) 2011-2012, JGraph Ltd
  */
 package com.mxgraph.online;

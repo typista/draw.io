@@ -1,5 +1,5 @@
 /**
- * $Id: mxBpmnShape2.js,v 1.5 2013-02-02 14:01:20 gaudenz Exp $
+ * $Id: mxBpmnShape2.js,v 1.5 2013/02/02 14:01:20 gaudenz Exp $
  * Copyright (c) 2006-2010, JGraph Ltd
  */
 /**

@@ -11,7 +11,15 @@
 	mxStencilRegistry.libraries['bpmn'] = [SHAPES_PATH + '/bpmn/mxBpmnShape2.js', STENCIL_PATH + '/bpmn.xml'];
 	mxStencilRegistry.libraries['er'] = [SHAPES_PATH + '/er/mxER.js'];
 	mxStencilRegistry.libraries['ios'] = [SHAPES_PATH + '/mockup/mxMockupiOS.js'];
-
+	mxStencilRegistry.libraries['mockup/buttons'] = [SHAPES_PATH + '/mockup/mxMockupButtons.js'];
+	mxStencilRegistry.libraries['mockup/containers'] = [SHAPES_PATH + '/mockup/mxMockupContainers.js'];
+	mxStencilRegistry.libraries['mockup/forms'] = [SHAPES_PATH + '/mockup/mxMockupForms.js'];
+	mxStencilRegistry.libraries['mockup/graphics'] = [SHAPES_PATH + '/mockup/mxMockupGraphics.js', STENCIL_PATH + '/mockup/misc.xml'];
+	mxStencilRegistry.libraries['mockup/markup'] = [SHAPES_PATH + '/mockup/mxMockupMarkup.js'];
+	mxStencilRegistry.libraries['mockup/misc'] = [SHAPES_PATH + '/mockup/mxMockupMisc.js', STENCIL_PATH + '/mockup/misc.xml'];
+	mxStencilRegistry.libraries['mockup/navigation'] = [SHAPES_PATH + '/mockup/mxMockupNavigation.js', STENCIL_PATH + '/mockup/misc.xml'];
+	mxStencilRegistry.libraries['mockup/text'] = [SHAPES_PATH + '/mockup/mxMockupText.js'];
+	
 	/**
 	 * Toggle palette.
 	 */
@@ -54,12 +62,14 @@
 
 		this.addGeneralPalette(true);
 		this.addIconfinder();
+		this.addMoreShapes();
 		this.addUmlPalette(false);
 		this.addErPalette();
 		this.addIosPalette();
-		this.addBpmnPalette(dir, false);
 		this.addStencilPalette('flowchart', 'Flowchart', dir + '/flowchart.xml',
-			';fillColor=#ffffff;strokeColor=#000000;strokeWidth=2');
+		';fillColor=#ffffff;strokeColor=#000000;strokeWidth=2');
+		this.addMockups();
+		this.addBpmnPalette(dir, false);
 		this.addStencilPalette('basic', mxResources.get('basic'), dir + '/basic.xml',
 			';fillColor=#ffffff;strokeColor=#000000;strokeWidth=2');
 		this.addStencilPalette('arrows', mxResources.get('arrows'), dir + '/arrows.xml',
@@ -156,12 +166,6 @@
 				';fillColor=#000000;strokeColor=none');
 		}
 		
-		for (var i = 0; i < mockups.length; i++)
-		{
-			this.addStencilPalette('ui' + mockups[i], 'Mockup / ' + mockups[i],
-				dir + '/mockup/' + mockups[i].toLowerCase().replace(/ /g, '_') + '.xml');
-		}
-		
 		for (var i = 0; i < ee.length; i++)
 		{
 			this.addStencilPalette('electrical' + ee[i], 'Electrical / ' + ee[i],
@@ -198,8 +202,6 @@
 				dir + '/cisco/' + cisco[i].toLowerCase().replace(/ /g, '_') + '.xml',
 				';fillColor=#036897;strokeColor=#ffffff;strokeWidth=2', null, null, 1.6);
 		}
-
-		this.addMoreShapes();
 	};
 	
 	// Adds the more shapes entry
@@ -853,6 +855,320 @@
 			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iCopyArea;' + mxConstants.STYLE_STROKECOLOR + '=#000000;' + mxConstants.STYLE_STROKEWIDTH + '=0.5;buttonText=Copy;textColor=#ffffff;fillColor2=#000000;fillColor3=#ffffff;', sizeX * 0.3, sizeY * 0.2, '', 'Copy area', false));
 			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iHomePageControl;' + mxConstants.STYLE_FILLCOLOR + '=#666666;' + mxConstants.STYLE_STROKECOLOR + '=#cccccc;' + mxConstants.STYLE_STROKEWIDTH + '=0.5;', sizeX * 0.25, sizeY * 0.0125, '', 'Home page control', false));
 			content.appendChild(this.createVertexTemplate(s + mxConstants.STYLE_SHAPE + '=mxgraph.ios.iPageControl;' + mxConstants.STYLE_FILLCOLOR + '=#666666;' + mxConstants.STYLE_STROKECOLOR + '=#cccccc;', sizeX * 0.25, sizeY * 0.0125, '', 'Page control', false));
+		}));
+	};
+	
+	// Adds mockup shapes
+	Sidebar.prototype.addMockups = function()
+	{
+		mxResources.parse('mockupbuttons=mockupButtons');
+		mxResources.parse('mxgraph.mockup.buttons.button=Button');
+		mxResources.parse('mxgraph.mockup.buttons.multiButton=Button');
+		mxResources.parse('mxgraph.mockup.buttons.horButtonBar=Horizontal Button Bar');
+		mxResources.parse('mxgraph.mockup.buttons.verButtonBar=Vertical Button Bar');
+		mxResources.parse('mxgraph.mockup.buttons.onOffButton=On-Off Button');
+		
+		mxResources.parse('mockupcontainers=mockupContainers');
+		mxResources.parse('mxgraph.mockup.containers.videoPlayer=Video Player');
+		mxResources.parse('mxgraph.mockup.containers.accordion=Accordion');
+		mxResources.parse('mxgraph.mockup.containers.browserWindow=Browser Window');
+		mxResources.parse('mxgraph.mockup.containers.userMale=User, Male');
+		mxResources.parse('mxgraph.mockup.containers.userFemale=User, Female');
+		mxResources.parse('mxgraph.mockup.containers.group=Group');
+		mxResources.parse('mxgraph.mockup.containers.window=Window');
+		mxResources.parse('mxgraph.mockup.containers.horTabBar=Horizontal Tab Bar');
+		mxResources.parse('mxgraph.mockup.containers.verTabBar=Vertical Tab Bar');
+		mxResources.parse('mxgraph.mockup.containers.alertBox=Alert Box');
+		
+		mxResources.parse('mockupforms=mockupForms');
+		mxResources.parse('mxgraph.mockup.forms.checkboxGroup=Checkbox Group');
+		mxResources.parse('mxgraph.mockup.forms.radioGroup=Radiobutton Group');
+		mxResources.parse('mxgraph.mockup.forms.colorPicker=Color Picker');
+		mxResources.parse('mxgraph.mockup.forms.comboBox=Combo Box');
+		mxResources.parse('mxgraph.mockup.forms.spinner=Spinner');
+		mxResources.parse('mxgraph.mockup.forms.menuBar=Menu Bar');
+		mxResources.parse('mxgraph.mockup.forms.horSlider=Horizontal Slider');
+		mxResources.parse('mxgraph.mockup.forms.listBox=List Box');
+		mxResources.parse('mxgraph.mockup.forms.pwField=Password Field');
+		mxResources.parse('mxgraph.mockup.forms.splitter=Splitter');
+		mxResources.parse('mxgraph.mockup.forms.wedgeBar=Wedge Bar');
+		mxResources.parse('mxgraph.mockup.forms.searchBox=Search Box');
+		mxResources.parse('mxgraph.mockup.forms.signIn=Sign In');
+		mxResources.parse('mxgraph.mockup.forms.calendar=Calendar');
+
+		mxResources.parse('mockupgraphics=mockupGraphics');
+		mxResources.parse('mxgraph.mockup.graphics.barChart=Bar Chart');
+		mxResources.parse('mxgraph.mockup.graphics.columnChart=Column Chart');
+		mxResources.parse('mxgraph.mockup.graphics.lineChart=Line Chart');
+		mxResources.parse('mxgraph.mockup.graphics.pieChart=Pie Chart');
+		mxResources.parse('mxgraph.mockup.graphics.iconGrid=Icon Grid');
+		mxResources.parse('mxgraph.mockup.graphics.bubbleChart=Bubble Chart');
+		mxResources.parse('mxgraph.mockup.graphics.gauge=Gauge');
+		mxResources.parse('mxgraph.mockup.graphics.plotChart=Plot Chart');
+		mxResources.parse('mxgraph.mockup.graphics.ganttChart=Gantt Chart');
+
+		mxResources.parse('mockupmarkup=mockupMarkup');
+		mxResources.parse('mxgraph.mockup.markup.curlyBrace=Curly Brace');
+		mxResources.parse('mxgraph.mockup.markup.line=Line');
+		mxResources.parse('mxgraph.mockup.markup.scratchOut=Scratch Out');
+		mxResources.parse('mxgraph.mockup.markup.redX=Red X');
+		
+		mxResources.parse('mockupmisc=mockupMisc');
+		mxResources.parse('mxgraph.mockup.misc.playbackControls=Playback Controls');
+		mxResources.parse('mxgraph.mockup.misc.progressBar=Progress Bar');
+		mxResources.parse('mxgraph.mockup.misc.shoppingCart=Shopping Cart');
+		mxResources.parse('mxgraph.mockup.misc.rating=Rating');
+		mxResources.parse('mxgraph.mockup.misc.mail2=Mail');
+		mxResources.parse('mxgraph.mockup.misc.volumeSlider=Volume Slider');
+		mxResources.parse('mxgraph.mockup.misc.editIcon=Edit Icon');
+		mxResources.parse('mxgraph.mockup.misc.printIcon=Print Icon');
+		mxResources.parse('mxgraph.mockup.misc.shareIcon=Share Icon');
+		mxResources.parse('mxgraph.mockup.misc.trashcanIcon=Trashcan Icon');
+		mxResources.parse('mxgraph.mockup.misc.copyrightIcon=Copyright');
+		mxResources.parse('mxgraph.mockup.misc.registeredIcon=Registered');
+		mxResources.parse('mxgraph.mockup.misc.volumeIcon=Volume');
+		mxResources.parse('mxgraph.mockup.misc.ruler=Ruler');
+		mxResources.parse('mxgraph.mockup.misc.revisionTable=Revision Table');
+		mxResources.parse('mxgraph.mockup.misc.statusBar=Status Bar');
+		mxResources.parse('mxgraph.mockup.misc.pin=Pin');
+		
+		mxResources.parse('mockupnavigation=mockupNavigation');
+		mxResources.parse('mxgraph.mockup.navigation.breadcrumb=Breadcrumb');
+		mxResources.parse('mxgraph.mockup.navigation.stepBar=Step Bar');
+		mxResources.parse('mxgraph.mockup.navigation.coverFlow=Cover Flow');
+		mxResources.parse('mxgraph.mockup.navigation.scrollBar=Scroll Bar');
+		mxResources.parse('mxgraph.mockup.navigation.pagination=Pagination');
+		mxResources.parse('mxgraph.mockup.navigation.pageControl=Page Control');
+		mxResources.parse('mxgraph.mockup.navigation.mapNavigator=Map Navigator');
+		
+		mxResources.parse('mockuptext=mockupText');
+		mxResources.parse('mxgraph.mockup.text.link=Link');
+		mxResources.parse('mxgraph.mockup.text.linkBar=Link Bar');
+		mxResources.parse('mxgraph.mockup.text.callout=Callout');
+		mxResources.parse('mxgraph.mockup.text.stickyNote=Sticky Note');
+		mxResources.parse('mxgraph.mockup.text.bulletedList=Bulleted List');
+		mxResources.parse('mxgraph.mockup.text.textBox=Text Box');
+		mxResources.parse('mxgraph.mockup.text.captcha=Captcha');
+		mxResources.parse('mxgraph.mockup.text.alphanumeric=Alphanumeric');
+
+		var s = mxConstants.STYLE_VERTICAL_LABEL_POSITION + '=bottom;' + mxConstants.STYLE_VERTICAL_ALIGN + '=top;' + mxConstants.STYLE_STROKEWIDTH + '=1;' + mxConstants.STYLE_SHAPE;
+		// Space savers
+		var skcl6 = mxConstants.STYLE_STROKECOLOR + '=#666666;';
+		var skcl9 = mxConstants.STYLE_STROKECOLOR + '=#999999;';
+		var flclf = mxConstants.STYLE_FILLCOLOR + '=#ffffff;';
+		var skclN = mxConstants.STYLE_STROKECOLOR + '=none;';
+
+		this.addPalette('mockupButtons', 'Mockup Buttons', false, mxUtils.bind(this, function(content)
+		{
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.buttons.button;' + skcl6 + 'textColor=#ffffff;mainText=Button Text;buttonStyle=round;textSize=17;' + mxConstants.STYLE_FILLCOLOR + '=#008cff',
+										150, 50, '', 'Button', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.buttons.multiButton;' + skcl6 + 'textColor=#ffffff;mainText=Main Text;subText=Sub Text;buttonStyle=round;textSize=17;' + mxConstants.STYLE_FILLCOLOR + '=#008cff',
+										150, 50, '', 'Multiline Button', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.buttons.horButtonBar;' + skcl6 + 'strokeColor2=#c4c4c4;textColor=#666666;textColor2=#ffffff;mainText=+Button 1,Button 2,Button 3,Button 4;textSize=17;' + flclf + 'fillColor2=#008cff',
+										500, 50, '', 'Horizontal Button Bar', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.buttons.verButtonBar;' + skcl6 + 'strokeColor2=#c4c4c4;textColor=#666666;textColor2=#ffffff;mainText=+Button 1,Button 2,Button 3,Button 4;textSize=17;' + flclf + 'fillColor2=#008cff',
+										120, 200, '', 'Vertical Button Bar', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.buttons.onOffButton;' + skcl9 + 'buttonState=on;fillColor2=#008cff;textColor=#ffffff,#999999;textSize=17;',
+										150, 50, '', 'On-off button', false));
+		}));
+		
+		this.addPalette('mockupContainers', 'Mockup Containers', false, mxUtils.bind(this, function(content)
+		{
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.containers.videoPlayer;' + skcl6 + 'strokeColor2=#008cff;strokeColor3=#c4c4c4;textColor=#666666;' + flclf + 'fillColor2=#008cff;barHeight=30;barPos=20;',
+										300, 200, '', 'Video Player', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.containers.accordion;' + skcl6 + 'strokeColor2=#c4c4c4;textColor=#666666;textColor2=#ffffff;mainText=Group 1,Group 2,+Group 3,Group 4;textSize=17;' + flclf + 'fillColor2=#008cff',
+										100, 220, '', 'Accordion', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.containers.browserWindow;' + skcl6 + 'strokeColor2=#008cff;strokeColor3=#c4c4c4;textColor=#666666;' + flclf,
+										550, 380, '', 'Browser Window', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.containers.userMale;' + skcl6 + 'strokeColor2=#008cff;' + flclf,
+										100, 100, '', 'User, Male', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.containers.userFemale;' + skcl6 + 'strokeColor2=#008cff;' + flclf,
+										100, 100, '', 'User, Female', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.containers.group;' + skcl6 + flclf + 'fillColor2=#008cff;textSize=17;mainText=Group;textColor=#ffffff;',
+										150, 200, '', 'Group', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.containers.window;strokeColor2=#008cff;strokeColor3=#c4c4c4;textColor=#666666;' + flclf + 'mainText=Window Title;textSize=17;',
+										550, 380, '', 'Window', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.containers.horTabBar;' + skcl6 + 'fillColor2=#008cff;textColor=#666666;textColor2=#ffffff;' + flclf + 'tabs=Tab 1,+Tab 2,Tab 3;textSize=17;tabStyle=block;',
+										400, 200, '', 'Horizontal Tab Bar', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.containers.verTabBar;' + skcl6 + 'fillColor2=#008cff;textColor=#666666;textColor2=#ffffff;' + flclf + 'tabs=Tab 1,+Tab 2,Tab 3;textSize=17;tabStyle=block;',
+										400, 200, '', 'Vertical Tab Bar', false));
+			
+			var alertCommon = s + '=mxgraph.mockup.containers.alertBox;' + skcl6 + 'strokeColor2=#008cff;strokeColor3=#c4c4c4;textColor=#666666;' + flclf + 'mainText';
+			content.appendChild(this.createVertexTemplate(alertCommon + '=Dialog Title;subText=Dialog text line 1,Dialog text line 2;buttonText=Cancel,OK;textSize=17;',
+										250, 140, '', 'Dialog Box', false));
+			content.appendChild(this.createVertexTemplate(alertCommon + '=Message Title;subText=Message text line 1,Message text line 2,Message text line 3;buttonText=OK;textSize=17;',
+										250, 160, '', 'Message Box', false));
+		}));
+		
+		this.addPalette('mockupForms', 'Mockup Forms', false, mxUtils.bind(this, function(content)
+		{
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.forms.checkboxGroup;' + skclN + 'textColor=#666666,#008cff;mainText=Option 1;' + mxConstants.STYLE_FONTSIZE + '=17;' + mxConstants.STYLE_FILLCOLOR + '=none;',
+										150, 30, '', 'Checkbox', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.forms.checkboxGroup;' + skcl9 + 'textColor=#666666,#008cff;mainText=Setting 1,Setting 2,+Setting 3,Setting 4;' + mxConstants.STYLE_FONTSIZE + '=17;' + flclf,
+										150, 120, '', 'Checkbox Group', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.forms.radioGroup;' + skclN + 'textColor=#666666,#008cff;mainText=Option 1;' + mxConstants.STYLE_FONTSIZE + '=17;' + mxConstants.STYLE_FILLCOLOR + '=none;',
+										150, 30, '', 'Radiobutton', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.forms.radioGroup;' + skcl9 + 'textColor=#666666,#008cff;mainText=Setting 1,Setting 2,+Setting 3,Setting 4;' + mxConstants.STYLE_FONTSIZE + '=17;' + flclf,
+										150, 120, '', 'Radiobutton Group', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.forms.colorPicker;chosenColor=#aaddff;', 40, 40, '', 'Color Picker', false));
+
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.forms.comboBox;' + skcl9 + mxConstants.STYLE_FILLCOLOR + '=#ddeeff;fillColor2=#aaddff;mainText=Option 1;textColor=#666666;textSize=17;',
+										150, 30, '', 'Combo Box', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.forms.spinner;' + skcl9 + 'spinLayout=right;spinStyle=normal;adjStyle=triangle;' + mxConstants.STYLE_FILLCOLOR + '=#aaddff;textSize=17;textColor=#666666;',
+										150, 60, '', 'Spinner', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.forms.menuBar;' + skcl9 + 'strokeColor2=#c4c4c4;textColor=#666666;textColor2=#ffffff;mainText=File,Edit,Options,Tools,Window,Help;textSize=17;' + flclf + 'fillColor2=#008cff',
+										500, 30, '', 'Menu Bar', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.forms.horSlider;' + skcl9 + flclf + 'sliderStyle=basic;sliderPos=20;handleStyle=circle;fillColor2=#ddeeff;',
+										150, 30, '', 'Horizontal Slider', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.forms.horSlider;' + skcl9 + flclf + 'sliderStyle=basic;sliderPos=20;handleStyle=circle;fillColor2=#ddeeff;' + mxConstants.STYLE_DIRECTION + '=' + mxConstants.DIRECTION_NORTH + ';',
+										30, 150, '', 'Vertical Slider', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.forms.listBox;' + skcl9 + 'textColor=#666666,#008cff;' + flclf + 'mainText=Title;subText=Item 1,Item 2,+Item 3,Item 4;textSize=17;selectedColor=#ddeeff;',
+										150, 200, '', 'List Box', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.forms.pwField;' + skcl9 + 'mainText=********', 150, 30, '', 'Password Field', false));
+
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.forms.splitter;' + skcl9, 350, 10, '', 'Horizontal Splitter', false));
+
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.forms.splitter;' + skcl9 + mxConstants.STYLE_DIRECTION + '=' + mxConstants.DIRECTION_NORTH + ';', 10, 350, '', 'Vertical Splitter', false));
+
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.forms.wedgeBar;' + skcl6 + 'fillColor2=#008cff;textColor=#666666;textColor2=#ffffff;' + flclf + 'tabs=Tab 1,+Tab 2,Tab 3;' + 'textSize=17;tabStyle=block;',
+										400, 30, '', 'Wedge Bar', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.menus_and_buttons.font_style_selector_1;', 136, 31, '', 'Formatting Toolbar 1', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.menus_and_buttons.font_style_selector_2;', 235, 31, '', 'Formatting Toolbar 2', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.menus_and_buttons.font_style_selector_3;', 176, 38, '', 'Formatting Toolbar 3', false));
+
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.forms.searchBox;' + skcl9 + 'mainText=Search;strokeColor2=#008cff;' + 'textColor=#666666;textSize=17;',
+										150, 30, '', 'Search Box', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.forms.signIn;' + skcl9 + 'strokeColor2=#ddeeff;textColor=#666666;mainText=Sign In,User Name:,johndoe,Password:,********,Forgot Password?,New User,SIGN IN,SIGN UP;textColor2=#ffffff;textSize=12;textSize2=15;fillColor2=#66bbff;',
+										200, 300, '', 'Sign In', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.forms.calendar;' + skcl9 + 'strokeColor2=#008cff;mainText=April 2013;textSize=12;textColor=#999999;firstDay=0;startOn=0;days=30;prevDays=31;dayNames=Mo,Tu,We,Th,Fr,Sa,Su;selDay=24;textColor2=#ffffff;',
+										160, 175, '', 'Calendar', false));
+		}));
+
+		this.addPalette('mockupGraphics', 'Mockup Graphics', false, mxUtils.bind(this, function(content)
+		{
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.graphics.barChart;' + flclf +  skclN + 'strokeColor2=none;strokeColor3=#666666;fillColor2=#008cff;fillColor3=#dddddd;',
+										400, 200, '', 'Bar Chart', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.graphics.columnChart;' + flclf +  skclN + 'strokeColor2=none;strokeColor3=#666666;fillColor2=#008cff;fillColor3=#dddddd;',
+										400, 200, '', 'Column Chart', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.graphics.lineChart;' + flclf +  skclN + 'strokeColor2=#666666;strokeColor3=#008cff;strokeColor4=#dddddd;',
+										400, 200, '', 'Line Chart', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.graphics.pieChart;' +  mxConstants.STYLE_STROKECOLOR + '=#008cff;parts=10,20,35;partColors=#e0e0e0,#d0d0d0,#c0c0c0,#b0b0b0,#a0a0a0;'+ mxConstants.STYLE_STROKEWIDTH + '=2;',
+										200, 200, '', 'Pie Chart', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.graphics.iconGrid;' +  skcl9 + 'gridSize=1,1;', 50, 50, '', 'Icon Placeholder', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.graphics.iconGrid;' +  skcl9 + 'gridSize=3,3;', 200, 200, '', 'Icon Grid', false));
+
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.graphics.bubbleChart;' + flclf +  skclN + 'strokeColor2=none;strokeColor3=#666666;fillColor2=#008cff;fillColor3=#dddddd;',
+										400, 200, '', 'Bubble Chart', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.graphics.gauge;' + skcl9 + 'gaugePos=25;scaleColors=#bbddff,#ddeeff,#99ccff;gaugeLabels=CPU[%],0,100;needleColor=#008cff;' + flclf + 'textColor=#666666;textSize=12;',
+										100, 100, '', 'Gauge', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.graphics.plotChart;' + flclf +  mxConstants.STYLE_STROKECOLOR + '=#none;strokeColor2=#aaaaaa;strokeColor3=#666666;fillColor2=#99aaff,#0022ff,#008cff;',
+										400, 200, '', 'Plot Chart', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.graphics.ganttChart;' + flclf +  skcl9 + 'textColor=#666666;textSize=12;fillColor2=#99ccff,#dddddd;',
+										600, 300, '', 'Gantt Chart', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.misc.map;', 250, 250, '', 'Map', false));
+		}));
+
+		this.addPalette('mockupMarkup', 'Mockup Markup', false, mxUtils.bind(this, function(content)
+		{
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.markup.curlyBrace;' + skcl9, 100, 20, '', 'Horizontal Curly Brace', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.markup.curlyBrace;' + skcl9 + mxConstants.STYLE_DIRECTION + '=' + mxConstants.DIRECTION_NORTH + ';', 20, 100, '', 'Vertical Curly Brace', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.markup.line;' + skcl9, 100, 20, '', 'Horizontal Line', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.markup.line;' + skcl9 + mxConstants.STYLE_DIRECTION + '=' + mxConstants.DIRECTION_NORTH + ';', 20, 100, '', 'Vertical Line', false));
+			content.appendChild(this.createVertexTemplate(mxConstants.STYLE_SHAPE + '=mxgraph.mockup.markup.scratchOut;' + skcl9 + mxConstants.STYLE_VERTICAL_LABEL_POSITION + '=bottom;' + mxConstants.STYLE_VERTICAL_ALIGN + '=top;' + mxConstants.STYLE_STROKEWIDTH + '=4;',
+										200, 100, '', 'Scratch Out', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.markup.redX;' + mxConstants.STYLE_FILLCOLOR + '=#ff0000;' + skclN, 200, 100, '', 'Red X', false));
+		}));
+
+		this.addPalette('mockupMisc', 'Mockup Misc', false, mxUtils.bind(this, function(content)
+		{
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.misc.help_icon;', 32, 32, '', 'Help Icon', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.misc.playbackControls;' + skcl9 + 'fillColor2=#99ddff;strokeColor2=none;fillColor3=#ffffff;strokeColor3=none;',
+										250, 30, '', 'Playback Controls', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.misc.progressBar;' + mxConstants.STYLE_FILLCOLOR + '=#cccccc;' + skclN + 'fillColor2=#99ddff;barPos=80;', 200, 20, '', 'Progress Bar', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.misc.shoppingCart;' + skcl9, 50, 50, '', 'Shopping Cart', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.misc.rating;' + skcl9 + mxConstants.STYLE_FILLCOLOR + '=#ffff00;emptyFillColor=#ffffff;grade=4;ratingScale=5;ratingStyle=star;',
+										225, 30, '', 'Rating', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.misc.mail2;' + skcl9, 100, 60, '', 'Mail', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.misc.volumeSlider;barPos=80;' + mxConstants.STYLE_FILLCOLOR + '=#cccccc;' + skcl9 + 'fillColor2=#ddeeff;', 250, 30, '', 'Volume Slider', false));
+			
+			var miscCommon = skcl9 + mxConstants.STYLE_VERTICAL_LABEL_POSITION + '=bottom;' + mxConstants.STYLE_VERTICAL_ALIGN + '=top;' + mxConstants.STYLE_STROKEWIDTH + '=2;';
+			content.appendChild(this.createVertexTemplate(mxConstants.STYLE_SHAPE + '=mxgraph.mockup.misc.editIcon;' + miscCommon, 50, 50, '', 'Edit Icon', false));
+			content.appendChild(this.createVertexTemplate(mxConstants.STYLE_SHAPE + '=mxgraph.mockup.misc.printIcon;' + miscCommon, 50, 50, '', 'Print Icon', false));
+			content.appendChild(this.createVertexTemplate(mxConstants.STYLE_SHAPE + '=mxgraph.mockup.misc.shareIcon;' + miscCommon, 50, 50, '', 'Share Icon', false));
+			content.appendChild(this.createVertexTemplate(mxConstants.STYLE_SHAPE + '=mxgraph.mockup.misc.trashcanIcon;' + miscCommon, 50, 50, '', 'Trashcan Icon', false));
+			content.appendChild(this.createVertexTemplate(mxConstants.STYLE_SHAPE + '=mxgraph.mockup.misc.copyrightIcon;' + miscCommon, 25, 25, '', 'Copyright', false));
+			content.appendChild(this.createVertexTemplate(mxConstants.STYLE_SHAPE + '=mxgraph.mockup.misc.registeredIcon;' + miscCommon, 25, 25, '', 'Registered', false));
+			content.appendChild(this.createVertexTemplate(mxConstants.STYLE_SHAPE + '=mxgraph.mockup.misc.volumeIcon;' + miscCommon, 25, 25, '', 'Volume', false));
+
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.misc.ruler;rulerOrient=down;unitSize=10;' + skcl9, 350, 20, '', 'Horizontal Ruler', false));
+
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.misc.ruler;rulerOrient=down;unitSize=10;' + skcl9 + mxConstants.STYLE_DIRECTION + '=' + mxConstants.DIRECTION_NORTH + ';',
+										20, 350, '', 'Vertical Ruler', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.misc.revisionTable;' + skcl9 + 'textColor=#999999;textSize=17;mainText=REVISION HISTORY,REV,DATE,DESCRIPTION,A,5/17/2013,Design modified;',
+										400, 75, '', 'Revision Table', false));
+			content.appendChild(this.createVertexTemplate(mxConstants.STYLE_SHAPE + '=mxgraph.mockup.misc.statusBar;' + skcl9 + 'fillColor2=#ddeeff;mainText=Status text,Text 2,Text 3;textColor=#999999;textSize=15;strokeColor2=#008cff;',
+										500, 30, '', 'Status Bar', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.misc.pin;fillColor2=#00dd00;fillColor3=#004400;' + mxConstants.STYLE_STROKECOLOR + '=#006600;',
+										10, 25, '', 'Pin', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.misc.pin;fillColor2=#dd0000;fillColor3=#440000;' + mxConstants.STYLE_STROKECOLOR + '=#660000;',
+										10, 25, '', 'Pin', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.misc.pin;fillColor2=#ccccff;fillColor3=#0000ff;' + mxConstants.STYLE_STROKECOLOR + '=#000066;',
+										10, 25, '', 'Pin', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.misc.pin;fillColor2=#ffff00;fillColor3=#888800;' + mxConstants.STYLE_STROKECOLOR + '=#999900;',
+										10, 25, '', 'Pin', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.misc.pin;fillColor2=#ffa500;fillColor3=#885000;' + mxConstants.STYLE_STROKECOLOR + '=#997000;',
+										10, 25, '', 'Pin', false));
+		}));
+
+		this.addPalette('mockupNavigation', 'Mockup Navigation', false, mxUtils.bind(this, function(content)
+		{
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.navigation.breadcrumb;' + mxConstants.STYLE_STROKECOLOR + '=#c4c4c4;textColor=#666666;textColor2=#008cff;mainText=Layer 1,L2,Layer 3,Layer 4;textSize=17;' + mxConstants.STYLE_STROKEWIDTH + '=4;',
+										300, 30, '', 'Breadcrumb', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.navigation.stepBar;' + mxConstants.STYLE_STROKECOLOR + '=#c4c4c4;textColor=#666666;textColor2=#008cff;mainText=Step 1,Step 2,+Step 3,Step 4;textSize=17;' + mxConstants.STYLE_FILLCOLOR + '=#666666;',
+										300, 50, '', 'Step Bar', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.navigation.coverFlow;' + mxConstants.STYLE_STROKECOLOR + '=#999999',
+										400, 200, '', 'Cover Flow', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.navigation.scrollBar;' + skcl9 + 'barPos=20;fillColor2=#99ddff;strokeColor2=none;',
+										200, 20, '', 'Horizontal Scroll Bar', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.navigation.scrollBar;' + skcl9 + 'barPos=20;fillColor2=#99ddff;strokeColor2=none;' + mxConstants.STYLE_DIRECTION + '=' + mxConstants.DIRECTION_NORTH + ';',
+										20, 200, '', 'Vertical Scroll Bar', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.navigation.pagination;linkText=<< Prev 1 2 3 4 5 6 7 8 9 10 Next >>;',
+										350, 30, '', 'Pagination', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.navigation.pageControl;' + mxConstants.STYLE_FILLCOLOR + '=#999999;' + mxConstants.STYLE_STROKECOLOR + '=#ddeeff;',
+										100, 30, '', 'Page Control', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.navigation.mapNavigator;fillColor2=#99ddff;strokeColor2=none;strokeColor3=#ffffff;' + skcl9,
+										60, 100, '', 'Map Navigator', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.misc.loading_circle_1;', 90, 90, '', 'Wheel Throbber 1', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.misc.loading_circle_2;', 90, 90, '', 'Wheel Throbber 2', false));
+		}));
+		
+		this.addPalette('mockupText', 'Mockup Text', false, mxUtils.bind(this, function(content)
+		{
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.text.link;linkText=Link;textSize=17;textColor=#0000ff;', 150, 30, '', 'Link', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.text.linkBar;' + skcl6 + 'strokeColor2=#c4c4c4;textColor=#0000ff;textColor2=#ffffff;mainText=+Button 1,Button 2,Button 3,Button 4;textSize=17;' + flclf + 'fillColor2=#008cff',
+										500, 25, '', 'Link Bar', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.text.callout;linkText=Callout;textSize=17;textColor=#666666;callDir=NW;callStyle=line;' + skcl6,
+										200, 100, '', 'Callout', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.text.stickyNote;textColor=#666666;mainText=Note line 1,Note line 2,Note line 3;textSize=17;',
+										200, 200, '', 'Sticky Note', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.text.bulletedList;textColor=#666666;mainText=Line 1,Line 2,Line 3,Line 4,Line 5;textSize=17;bulletStyle=hyphen;' + skclN + mxConstants.STYLE_FILLCOLOR + '=none;',
+										150, 135, '', 'Bulleted List', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.text.textBox;' + skcl6 + 'mainText=Line 1',
+										150, 30, '', 'Text Box', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.text.captcha;' + skcl6 + 'mainText=fG2yQ23',
+										150, 50, '', 'Captcha', false));
+			content.appendChild(this.createVertexTemplate(s + '=mxgraph.mockup.text.alphanumeric;linkText=0-9 A B C D E F G H I J K L M N O P Q R S T U V X Y Z',
+										450, 50, '', 'Alphanumeric', false));
+			
+			var loremText = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\nSed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?';
+			content.appendChild(this.createVertexTemplate('text;spacingTop=-5;whiteSpace=wrap', 250, 470, loremText, 'Paragraph of Text', true));
+			
+		    var classCell = new mxCell('<table border="1"><tr><th>Header 1</th><th>Header 2</th></tr>' +
+		    		'<tr><td>row 1, cell 1</td><td>row 1, cell 2</td></tr><tr><td>row 2, cell 1</td>' + 
+		    		'<td>row 2, cell 2</td></tr></table> ', new mxGeometry(0, 0, 145, 65),
+					'verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1');
+	    	classCell.vertex = true;
+	    	content.appendChild(this.createVertexTemplateFromCells([classCell], 145, 65, 'Table', true));
 		}));
 	};
 })();

@@ -1,3 +1,18 @@
+19-MAR-2013:2.2.0.2
+
+- Adds File->Rename for Google Drive file
+
+18-MAR-2013: 2.2.0.0
+
+- Adds mockup stencils
+
+28-FEB-2013: 2.1.1.2
+
+- Uses latest mxGraph
+- Switch XML stencil labels back on
+- Enables word wrapping for some basic shapes
+- Improves Drive authentication after timeout
+
 16-FEB-2013: 2.1.1.1
 
 - Uses latest mxGraph

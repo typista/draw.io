@@ -1,5 +1,5 @@
 /**
- * $Id: IconFinderServlet.java,v 1.5 2012-11-20 17:13:12 boris Exp $
+ * $Id: IconFinderServlet.java,v 1.5 2012/11/20 17:13:12 boris Exp $
  * Copyright (c) 2011-2012, JGraph Ltd
  */
 package com.mxgraph.online;

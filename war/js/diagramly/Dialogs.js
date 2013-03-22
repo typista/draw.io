@@ -1,5 +1,5 @@
 /*
- * $Id: Dialogs.js,v 1.38 2013-02-04 17:29:15 boris Exp $
+ * $Id: Dialogs.js,v 1.43 2013/03/19 18:39:48 boris Exp $
  * Copyright (c) 2006-2010, JGraph Ltd
  */
 /**
@@ -811,6 +811,7 @@ function ExportDialog(editorUi)
 	td.colSpan = 2;
 	td.style.paddingTop = '10px';
 	td.setAttribute('align', 'right');
+	
 	var saveBtn = mxUtils.button(mxResources.get('save'), mxUtils.bind(this, function()
 	{
 		if (parseInt(widthInput.value) <= 0 && parseInt(heightInput.value) <= 0)
@@ -1080,54 +1081,34 @@ function FilePickerDialog(editorUi, docs)
 	div.appendChild(message);
 	div.appendChild(document.createElement('br'))
 	
-	var select = document.createElement('select');
-	select.style.width = '180px';
-
-	var newOption = document.createElement('option');
-	newOption.setAttribute('value', 'new');
-	mxUtils.write(newOption, mxResources.get('openInNewWindow'));
-	select.appendChild(newOption);
-
-	var replaceOption = document.createElement('option');
-	replaceOption.setAttribute('value', 'replace');
-	mxUtils.write(replaceOption, mxResources.get('replaceExistingDrawing'));
-	select.appendChild(replaceOption);
-	
-	div.appendChild(select);
-	
-	div.appendChild(mxUtils.button(mxResources.get('ok'), function()
+	div.appendChild(mxUtils.button(mxResources.get('openInNewWindow'), function()
 	{
-		if (select.value == 'new')
+		for (var i = 0; i < docs.length; i++) 
 		{
-			for ( var i = 0; i < docs.length; i++) 
-			{
-				window.open(editorUi.getUrl(window.location.pathname + '?fileId=' + docs[i].id));
-			}
-		}
-		else if (select.value == 'replace')
-		{
-			//if multiple diagrams are selected, open first one in current window and others in new tabs/windows 
-			if(docs.length > 1) 
-			{
-				for ( var i = 1; i < docs.length; i++) 
-				{
-					window.open(editorUi.getUrl(window.location.pathname + '?fileId=' + docs[i].id));
-				}
-			}
-			
-			window.location.replace(editorUi.getUrl(window.location.pathname + '?fileId=' + docs[0].id));
+			window.open(editorUi.getUrl(window.location.pathname + '?fileId=' + docs[i].id));
 		}
 		
 		editorUi.hideDialog();
 	}));
 	
-	div.appendChild(mxUtils.button(mxResources.get('cancel'), function()
+	div.appendChild(mxUtils.button(mxResources.get('replaceExistingDrawing'), function()
 	{
+		//if multiple diagrams are selected, open first one in current window and others in new tabs/windows 
+		if(docs.length > 1) 
+		{
+			for ( var i = 1; i < docs.length; i++) 
+			{
+				window.open(editorUi.getUrl(window.location.pathname + '?fileId=' + docs[i].id));
+			}
+		}
+		
+		window.location.replace(editorUi.getUrl(window.location.pathname + '?fileId=' + docs[0].id));
+		
 		editorUi.hideDialog();
 	}));
 	
 	this.container = div;
-}
+};
 
 function SessionTimeoutDialog(editorUi, onOk, onCancel) 
 {
@@ -1145,4 +1126,56 @@ function SessionTimeoutDialog(editorUi, onOk, onCancel)
 	div.appendChild(buttons);
 	this.buttons = buttons;
 	this.container = div;
-}
+};
+
+function RenameDialog(editorUi,fileName, onRenameClick)
+{
+	var row, td;
+	
+	var table = document.createElement('table');
+	var tbody = document.createElement('tbody');
+	
+	row = document.createElement('tr');
+	
+	td = document.createElement('td');
+	td.style.fontSize = '10pt';
+	td.style.width = '100px';
+	mxUtils.write(td, mxResources.get('filename') + ':');
+	
+	row.appendChild(td);
+	
+	var nameInput = document.createElement('input');
+	nameInput.setAttribute('value', fileName);
+	nameInput.style.width = '180px';
+
+	td = document.createElement('td');
+	td.appendChild(nameInput);
+	row.appendChild(td);
+	
+	tbody.appendChild(row);
+
+	row = document.createElement('tr');
+	td = document.createElement('td');
+	td.colSpan = 2;
+	td.style.paddingTop = '20px';
+	td.style.whiteSpace = 'nowrap';
+	td.setAttribute('align', 'right');
+
+	var renameBtn = mxUtils.button(mxResources.get('rename'), function()
+	{
+		onRenameClick.apply(this, [nameInput.value]);
+	});
+	
+	td.appendChild(renameBtn);
+	td.appendChild(mxUtils.button(mxResources.get('cancel'), function()
+	{
+		editorUi.hideDialog();
+	}));
+	
+	row.appendChild(td);
+	tbody.appendChild(row);
+	
+	tbody.appendChild(row);
+	table.appendChild(tbody);
+	this.container = table;
+};

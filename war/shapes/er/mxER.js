@@ -1,5 +1,5 @@
 /**
- * $Id: mxER.js,v 1.4 2013-02-07 08:01:15 mate Exp $
+ * $Id: mxER.js,v 1.4 2013/02/07 08:01:15 mate Exp $
  * Copyright (c) 2006-2010, JGraph Ltd
  */
 

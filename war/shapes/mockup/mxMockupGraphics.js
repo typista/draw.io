@@ -1,5 +1,5 @@
 /**
- * $Id: mxMockupGraphics.js,v 1.4 2013-02-15 08:46:24 mate Exp $
+ * $Id: mxMockupGraphics.js,v 1.4 2013/02/15 08:46:24 mate Exp $
  * Copyright (c) 2006-2010, JGraph Ltd
  */
 

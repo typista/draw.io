@@ -1,5 +1,5 @@
 /*
- * $Id: Sharing.js,v 1.4 2012-06-18 14:42:27 gaudenz Exp $
+ * $Id: Sharing.js,v 1.4 2012/06/18 14:42:27 gaudenz Exp $
  * Copyright (c) 2006-2011, JGraph Ltd
  */
 /**

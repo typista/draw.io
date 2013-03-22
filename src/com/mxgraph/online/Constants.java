@@ -9,14 +9,14 @@ public class Constants
 	public static final int MAX_REQUEST_SIZE = 10485760;
 
 	/**
-	 * Maximum width for exports. Default is 6000px.
+	 * Maximum width for exports. Default is 12000px.
 	 */
-	public static final int MAX_WIDTH = 6000;
+	public static final int MAX_WIDTH = 12000;
 
 	/**
-	 * Maximum height for exports. Default is 6000px.
+	 * Maximum height for exports. Default is 12000px.
 	 */
-	public static final int MAX_HEIGHT = 6000;
+	public static final int MAX_HEIGHT = 12000;
 
 	/**
 	 * The domain where legacy images are stored.

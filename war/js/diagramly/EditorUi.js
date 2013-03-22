@@ -99,7 +99,7 @@
 		// Default libraries for domains
 		if (stc == null)
 		{
-			stc = 'general;images;uml;ios;er;bpmn;flowchart;basic;arrows;clipart';
+			stc = 'general;images;uml;ios;er;bpmn;flowchart;basic;arrows;mockups';
 		}
 
 		var tmp = stc.split(';');
@@ -127,7 +127,7 @@
 
 		if (mxUtils.indexOf(tmp, 'mockups') < 0)
 		{
-			this.sidebar.togglePalettes('ui', mockups);
+			this.sidebar.togglePalettes('mockup', mockups);
 		}
 
 		if (mxUtils.indexOf(tmp, 'signs') < 0)

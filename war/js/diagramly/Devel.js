@@ -1,5 +1,5 @@
 /*
- * $Id: Devel.js,v 1.14 2013-01-16 16:06:57 gaudenz Exp $
+ * $Id: Devel.js,v 1.18 2013/03/12 16:16:26 boris Exp $
  * Copyright (c) 2006-2010, JGraph Ltd
  */
 // This provides an indirection to make sure the mxClient.js
@@ -24,5 +24,7 @@ mxscript('js/diagramly/Integration.js');
 mxscript('js/diagramly/Dialogs.js');
 mxscript('js/diagramly/Sidebar.js');
 mxscript('js/diagramly/EditorUi.js');
-mxscript('js/diagramly/Sharing.js');
+//mxscript('js/diagramly/Sharing.js');
+mxscript('js/diagramly/rt-client-utils.js');
+mxscript('js/diagramly/ChatWindow.js');
 mxscript('js/diagramly/Diagramly.js');

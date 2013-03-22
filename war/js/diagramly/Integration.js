@@ -2,6 +2,7 @@ var mxIntegration =
 {
 	userId : null,
 	usernameEl : null,
+	displayName : null,
 	logoutEl : null,
 	activeIntegration : null,// Google Drive or Dropbox or something else
 	shouldLogout : false,
@@ -23,6 +24,7 @@ var mxIntegration =
 		this.usernameEl.style.display = 'none';
 
 		this.logoutEl = document.createElement('div');
+		this.logoutEl.id = 'signOut';
 		this.logoutEl.className = 'geItem';
 		this.logoutEl.style.cssFloat = 'left';
 		this.logoutEl.style.padding = '0px 12px 5px 10px';
@@ -51,6 +53,14 @@ var mxIntegration =
 	setUsername : function(username)
 	{
 		this.usernameEl.innerHTML = username;
+	},
+	setDisplayName : function(name)
+	{
+		this.displayName = name;
+	},
+	getDisplayName : function() 
+	{
+		return this.displayName;
 	},
 	getUsername : function()
 	{
@@ -181,6 +191,7 @@ EditorUi.prototype.createIntegrationUi = function()
 	var editorUi = this;
 
 	var integrationsContainer = document.createElement('div');
+	integrationsContainer.id = 'integrationContainer';
 	integrationsContainer.style.position = 'absolute';
 	integrationsContainer.style.right = '0px';
 	integrationsContainer.style.top = '2px';

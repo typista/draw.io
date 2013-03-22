@@ -1,5 +1,5 @@
 /**
- * $Id: OpenServlet.java,v 1.11 2012-08-23 14:41:52 david Exp $
+ * $Id: OpenServlet.java,v 1.11 2012/08/23 14:41:52 david Exp $
  * Copyright (c) 2011-2012, JGraph Ltd
  */
 package com.mxgraph.online;

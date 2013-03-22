@@ -1,5 +1,5 @@
 /*
- * $Id: Test.js,v 1.6 2013-02-08 09:53:36 mate Exp $
+ * $Id: Test.js,v 1.6 2013/02/08 09:53:36 mate Exp $
  * Copyright (c) 2006-2010, JGraph Ltd
  */
 mxscript('shapes/mockup/initMockups.js');

@@ -1,5 +1,5 @@
 /**
- * $Id: mxMockupiOS.js,v 1.2 2013-02-08 16:43:45 david Exp $
+ * $Id: mxMockupiOS.js,v 1.3 2013/02/28 13:49:43 mate Exp $
  * Copyright (c) 2006-2010, JGraph Ltd
  */
 
@@ -2315,7 +2315,7 @@ mxShapeMockupiComboBox.prototype.mainText = function(c, x, y, w, h, text, fontSi
 mxCellRenderer.prototype.defaultShapes[mxMockupC.SHAPE_ICOMBO_BOX] = mxShapeMockupiComboBox;
 
 //**********************************************************************************************************************************************************
-//Button
+//On-Off Button
 //**********************************************************************************************************************************************************
 /**
  * Extends mxShape.

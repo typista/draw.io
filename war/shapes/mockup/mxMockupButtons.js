@@ -1,5 +1,5 @@
 /**
- * $Id: mxMockupButtons.js,v 1.4 2013-02-11 15:19:21 mate Exp $
+ * $Id: mxMockupButtons.js,v 1.6 2013/03/18 08:56:19 david Exp $
  * Copyright (c) 2006-2010, JGraph Ltd
  */
 
@@ -477,7 +477,7 @@ mxShapeMockupVerButtonBar.prototype.paintVertexShape = function(c, x, y, w, h)
 		}
 
 		var currWidth = mxUtils.getSizeForString(buttonText, fontSize, mxConstants.DEFAULT_FONTFAMILY).width;
-		
+
 		if (currWidth > maxButtonWidth)
 		{
 			maxButtonWidth = currWidth;
@@ -536,7 +536,7 @@ mxShapeMockupVerButtonBar.prototype.background = function(c, w, h, rSize, button
 	//draw the button separators
 	c.setStrokeColor(separatorColor);
 	c.begin();
-	
+
 	for (var i = 1; i < buttonNum; i++)
 	{
 		if (i !== selectedButton && i !== (selectedButton + 1))
@@ -624,3 +624,90 @@ mxShapeMockupVerButtonBar.prototype.buttonText = function(c, w, h, textString, f
 };
 
 mxCellRenderer.prototype.defaultShapes[mxShapeMockupVerButtonBar.prototype.cst.SHAPE_VER_BUTTON_BAR] = mxShapeMockupVerButtonBar;
+
+//**********************************************************************************************************************************************************
+//On-Off Button
+//**********************************************************************************************************************************************************
+/**
+ * Extends mxShape.
+ */
+function mxShapeMockupOnOffButton(bounds, fill, stroke, strokewidth)
+{
+	mxShape.call(this);
+	this.bounds = bounds;
+	this.fill = fill;
+	this.stroke = stroke;
+	this.strokewidth = (strokewidth != null) ? strokewidth : 1;
+};
+
+/**
+ * Extends mxShape.
+ */
+mxUtils.extend(mxShapeMockupOnOffButton, mxShape);
+
+mxShapeMockupOnOffButton.prototype.cst = {
+		SHAPE_ON_OFF_BUTTON : 'mxgraph.mockup.buttons.onOffButton',
+		BUTTON_STATE : 'buttonState',
+		STATE_ON : 'on',
+		STATE_OFF : 'off',
+		FILL_COLOR2 : 'fillColor2',
+		TEXT_COLOR : 'textColor',
+		TEXT_SIZE : 'textSize'
+};
+
+/**
+ * Function: paintVertexShape
+ * 
+ * Paints the vertex shape.
+ */
+mxShapeMockupOnOffButton.prototype.paintVertexShape = function(c, x, y, w, h)
+{
+	c.translate(x, y);
+	w = Math.max(w, 10);
+	h = Math.max(h, 10);
+
+	this.background(c, x, y, w, h);
+	c.setShadow(false);
+	this.foreground(c, x, y, w, h);
+};
+
+mxShapeMockupOnOffButton.prototype.background = function(c, x, y, w, h)
+{
+	c.roundrect(0, 0, w, h, 10, 10);
+	c.fillAndStroke();
+
+};
+
+mxShapeMockupOnOffButton.prototype.foreground = function(c, x, y, w, h)
+{
+	var state = mxUtils.getValue(this.style, mxShapeMockupOnOffButton.prototype.cst.BUTTON_STATE, mxShapeMockupOnOffButton.prototype.cst.STATE_ON);
+	var fillColor2 = mxUtils.getValue(this.style, mxShapeMockupOnOffButton.prototype.cst.FILL_COLOR2, '#008cff');
+	var textColor = mxUtils.getValue(this.style, mxShapeMockupOnOffButton.prototype.cst.TEXT_COLOR, '#ffffff,#999999').toString().split(',');
+	var textSize = mxUtils.getValue(this.style, mxShapeMockupOnOffButton.prototype.cst.TEXT_SIZE, '17');
+
+	if (state === mxShapeMockupOnOffButton.prototype.cst.STATE_ON)
+	{
+		c.setFillColor(fillColor2);
+		c.setFontColor(textColor[0]);
+		c.roundrect(0, 0, w * 0.75, h, 10, 10);
+	}
+	else
+	{
+		c.setFontColor(textColor[1]);
+		c.roundrect(w * 0.25, 0, w * 0.75, h, 10, 10);
+	}
+
+	c.fillAndStroke();
+	c.setFontSize(textSize);
+
+	if(state === mxShapeMockupOnOffButton.prototype.cst.STATE_ON)
+	{
+		c.text(w * 0.375, h * 0.5, 0, 0, 'ON', mxConstants.ALIGN_CENTER, mxConstants.ALIGN_MIDDLE, 0, null, 0, 0, 0);
+	}
+	else if (state === mxShapeMockupOnOffButton.prototype.cst.STATE_OFF)
+	{
+		c.text(w * 0.625, h * 0.5, 0, 0, 'OFF', mxConstants.ALIGN_CENTER, mxConstants.ALIGN_MIDDLE, 0, null, 0, 0, 0);
+	}
+};
+
+mxCellRenderer.prototype.defaultShapes[mxShapeMockupOnOffButton.prototype.cst.SHAPE_ON_OFF_BUTTON] = mxShapeMockupOnOffButton;

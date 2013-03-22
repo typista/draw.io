@@ -1,5 +1,5 @@
 /**
- * $Id: initMockups.js,v 1.5 2013-02-11 12:14:28 mate Exp $
+ * $Id: initMockups.js,v 1.5 2013/02/11 12:14:28 mate Exp $
  * Copyright (c) 2006-2012, JGraph Ltd
  */
 var mxMockupC =
